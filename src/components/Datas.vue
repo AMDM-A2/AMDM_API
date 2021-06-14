@@ -1,21 +1,23 @@
 <template>
   <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
-    </v-row>
+      <v-data-table
+        :headers="headers"
+        :items="data"
+        :items-per-page="5"
+        class="elevation-1"
+      ></v-data-table>
   </v-container>
 </template>
 
 <script>
 export default {
   name: 'Datas',
+  data () {
+    return {
+      headers: [],
+      data: []
+    }
+  },
   created () {
     this.axios.get('/api/v1/data').then(v => {
       console.log(v)
