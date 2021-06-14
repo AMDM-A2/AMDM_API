@@ -1,13 +1,10 @@
 import express from 'express'
 
+const cors = require('cors')
+
 export default (app) => {
   app.use(express.json())
+  app.use(cors())
 
-  app.get('/foo', (req, res) => {
-    res.json({ msg: 'foo' })
-  })
-
-  app.post('/bar', (req, res) => {
-    res.json(req.body)
-  })
+  app.use('/api/v1/data', require('./routes/data'))
 }
