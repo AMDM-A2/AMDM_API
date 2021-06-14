@@ -1,4 +1,10 @@
-# amdm_api
+# AMDM_API
+
+BIZOUARN Aymeric
+BOISNARD Noéwen
+ROPERT Fabien
+VANDAMME Benoît
+
 
 ```
 npm install --global yarn # ou https://classic.yarnpkg.com/en/docs/install/#debian-stable
@@ -18,7 +24,7 @@ yarn build
 yarn start
 ```
 
-### Lints and fixes files
+### Lint
 ```
 npm run lint
 ```
