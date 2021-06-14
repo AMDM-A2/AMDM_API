@@ -1,24 +1,24 @@
 # amdm_api
 
-## Project setup
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+npm install --global yarn # ou https://classic.yarnpkg.com/en/docs/install/#debian-stable
+yarn install
 ```
 
-### Compiles and minifies for production
+# Développement
+
 ```
-npm run build
+yarn express
+yarn serve
+```
+
+### Production
+```
+yarn build
+yarn start
 ```
 
 ### Lints and fixes files
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

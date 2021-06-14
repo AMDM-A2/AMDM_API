@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "express": "vue-cli-service express:watch",
-    "express:run": "vue-cli-service express:run"
+    "express:run": "vue-cli-service express:run",
+    "production_start": "yarn build && yarn express:run"
   },
   "dependencies": {
     "babel-eslint": "^10.1.0",
