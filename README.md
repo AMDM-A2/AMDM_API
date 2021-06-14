@@ -8,6 +8,7 @@ VANDAMME Benoît
 
 ```
 npm install --global yarn # ou https://classic.yarnpkg.com/en/docs/install/#debian-stable
+yarn global add @vue/cli
 yarn install
 ```
 
