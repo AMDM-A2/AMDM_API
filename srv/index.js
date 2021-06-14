@@ -6,5 +6,5 @@ export default (app) => {
   app.use(express.json())
   app.use(cors())
 
-  app.use('/api/v1/data', require('./routes/data'))
+  app.use('/api/v1', require('./routes/api'))
 }
