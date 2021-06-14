@@ -1,6 +1,6 @@
-var sqlite3 = require('sqlite3').verbose()
+const sqlite3 = require('sqlite3').verbose()
 
-const DBSOURCE = 'db.sqlite'
+const DBSOURCE = 'db.db'
 
 const db = new sqlite3.Database(DBSOURCE, (err) => {
   if (err) {
