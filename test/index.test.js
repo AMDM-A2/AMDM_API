@@ -1,7 +1,7 @@
 const assert = require('assert')
 const request = require('request')
 const api = require('../srv/routes/api')
-const db = require('../srv/routes/database.js')
+const db = require('../srv/utils/database.js')
 const fs = require('fs')
 
 /* eslint-env node, mocha */

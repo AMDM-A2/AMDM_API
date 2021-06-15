@@ -1,4 +1,4 @@
-const db = require('./database.js')
+const db = require('../utils/database.js')
 const express = require('express')
 const app = express()
 
@@ -29,13 +29,9 @@ app.get('/data', function (req, res, next) {
     }
 
     const lots = {}
-    for (const row of rows) {
-      const tmp = JSON.parse(JSON.stringify(row))
-      delete tmp.id
-      delete tmp.numeroLot
-      if (lots[row.numeroLot]) lots[row.numeroLot].push(tmp)
-      else lots[row.numeroLot] = [tmp]
-    }
+    rows.forEach(row => {
+      lots[row.numeroLot] ? lots[row.numeroLot].push(row) : lots[row.numeroLot] = [row]
+    })
 
     const finalLots = []
     for (const r in lots) {

@@ -31,7 +31,7 @@
       <Datas class="justify-center align-content-center d-flex"/>
     </v-main>
 
-    <v-footer padless>
+    <v-footer padless fixed>
       <v-col
         class="text-center"
         cols="12"
