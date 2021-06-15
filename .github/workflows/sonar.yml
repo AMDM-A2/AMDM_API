@@ -15,6 +15,6 @@ jobs:
           fetch-depth: 0
       - uses: docker://sonarsource/sonar-scanner-cli:latest
         env:
-          GITHUB_TOKEN: "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"
+          GITHUB_TOKEN: "091c379b898e5be2d5202262eec90e1e094ac61b"
           SONAR_TOKEN: "2a9eeecff6a451e7d3bf83a5db687bcbd0aeb4b5"
           SONAR_HOST_URL: "http://vps.bizouarn.fr:9000"
