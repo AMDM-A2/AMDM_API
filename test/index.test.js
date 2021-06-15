@@ -8,32 +8,28 @@ const fs = require('fs')
 describe('Test principal', function () {
   describe('Mocha', function () {
     it('Mocha work', function () {
-      assert.equal(true, true)
+      assert.strictEqual(true, true)
     })
   })
   describe('DB', function () {
     it('DB work', function () {
-      assert.notEqual(db, null)
+      assert.notStrictEqual(db, null)
     })
     it('DB file is create', function () {
       fs.access('./db.db', fs.F_OK, (err) => {
-        if (err) {
-          assert.ok(false)
-        } else {
-          assert.ok(true)
-        }
+        if (err) assert.fail('Error while getting DB file')
+        else assert.ok(true)
       })
     })
   })
   describe('API', function () {
     it('API work', function () {
-      assert.notEqual(api, null)
+      assert.notStrictEqual(api, null)
     })
     it('API get data', function () {
       request.get('http://localhost:3000/api/v1/data', (err, response, body) => {
-        console.log(response)
-        if (err) assert.ok(false)
-        assert.equal(response.statusCode, 200)
+        if (err) assert.fail('Error while getting API')
+        assert.strictEqual(response.statusCode, 200)
       })
     })
   })
