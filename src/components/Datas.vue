@@ -1,18 +1,15 @@
 <template>
   <v-container>
     <div class="d-flex justify-center flex-column align-content-center">
-        <v-data-table
-          :headers="headers"
-          :items="data"
-          :items-per-page="5"
-          class="elevation-1 mb-4"
-        ></v-data-table>
+        <v-data-iterator
+          :items="items"
+        />
 
-        <v-card max-width="900">
+        <!-- <v-card max-width="900">
           <div id="chart">
             <apexchart type="bar" height="350" :options="chartOptions" :series="series"></apexchart>
           </div>
-        </v-card>
+        </v-card> -->
     </div>
   </v-container>
 </template>
@@ -22,8 +19,10 @@ export default {
   name: 'Datas',
   data () {
     return {
-      headers: [],
-      data: [],
+      // Iterator
+      items: [],
+
+      // Chart
       series: [{
         name: 'Net Profit',
         data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
@@ -76,8 +75,18 @@ export default {
     }
   },
   created () {
-    this.axios.get('/api/v1/data').then(v => {
-      console.log(v)
+    this.axios.get('http://localhost:3000/api/v1/data').then(v => {
+      this.items = [{
+        name: 'Frozen Yogurt',
+        calories: 159,
+        fat: 6.0,
+        carbs: 24,
+        protein: 4.0,
+        sodium: 87,
+        calcium: '14%',
+        iron: '1%'
+      }]
+      console.log(this.items)
     })
   }
 }
