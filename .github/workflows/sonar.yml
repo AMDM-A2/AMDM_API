@@ -17,14 +17,14 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 15
-      - uses: actions/download-artifact@v2
-        with:
-          name: coverage
-          path: coverage.lcov
       - run: yarn install
       - run: yarn build
       - run: yarn express:run &
              sleep 5 && yarn coverage
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage
+          path: coverage.lcov
   scan:
     name: scan
     needs: coverage
