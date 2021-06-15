@@ -67,7 +67,7 @@
                         color="#8e0088"
                         dark
                         icon
-                        @click="dialog = false"
+                        @click="dialog[item.lotId] = false"
                       >
                         <v-icon dark>mdi-close</v-icon>
                       </v-btn>
