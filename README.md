@@ -1,4 +1,5 @@
 # AMDM_API
+[![Test](https://github.com/AMDM-A2/AMDM_API/actions/workflows/yarn.yml/badge.svg)](https://github.com/AMDM-A2/AMDM_API/actions/workflows/yarn.yml)
 
 BIZOUARN Aymeric
 BOISNARD Noéwen
