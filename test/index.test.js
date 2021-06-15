@@ -30,9 +30,9 @@ describe('Test principal', function () {
       assert.notEqual(api, null)
     })
     it('API get data', function () {
-      // eslint-disable-next-line node/handle-callback-err
-      request.get('http://localhost:3000/api/v1/data', function (err, response, body) {
+      request.get('http://localhost:3000/api/v1/data', (err, response, body) => {
         console.log(response)
+        if (err) assert.ok(false)
         assert.equal(response.statusCode, 200)
       })
     })
