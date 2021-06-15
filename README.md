@@ -1,5 +1,6 @@
 # AMDM_API
 [![Test](https://github.com/AMDM-A2/AMDM_API/actions/workflows/yarn.yml/badge.svg)](https://github.com/AMDM-A2/AMDM_API/actions/workflows/yarn.yml)
+![SonarQube](http://vps.bizouarn.fr:9000/api/project_badges/measure?project=AMDM&metric=alert_status)
 
 BIZOUARN Aymeric
 BOISNARD Noéwen
