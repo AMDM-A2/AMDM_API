@@ -1,0 +1,118 @@
+
+
+Connected to the SQLite database.
+  Test principal
+    Mocha
+      √ Mocha work
+    DB
+      √ DB work
+      √ DB file is create
+    API
+      √ API work
+      √ API get data
+
+
+  5 passing (22ms)
+
+TN:
+SF:srv\routes\api.js
+FN:5,getLastProduct
+FN:6,(anonymous_1)
+FN:6,(anonymous_2)
+FN:10,getLastAlert
+FN:11,(anonymous_4)
+FN:11,(anonymous_5)
+FN:15,getProductSum
+FN:16,(anonymous_7)
+FN:16,(anonymous_8)
+FN:21,(anonymous_9)
+FN:25,(anonymous_10)
+FN:32,(anonymous_11)
+FN:50,(anonymous_12)
+FNF:13
+FNH:0
+FNDA:0,getLastProduct
+FNDA:0,(anonymous_1)
+FNDA:0,(anonymous_2)
+FNDA:0,getLastAlert
+FNDA:0,(anonymous_4)
+FNDA:0,(anonymous_5)
+FNDA:0,getProductSum
+FNDA:0,(anonymous_7)
+FNDA:0,(anonymous_8)
+FNDA:0,(anonymous_9)
+FNDA:0,(anonymous_10)
+FNDA:0,(anonymous_11)
+FNDA:0,(anonymous_12)
+DA:1,1
+DA:2,1
+DA:3,1
+DA:6,0
+DA:7,0
+DA:11,0
+DA:12,0
+DA:16,0
+DA:17,0
+DA:21,1
+DA:22,0
+DA:25,0
+DA:26,0
+DA:27,0
+DA:28,0
+DA:31,0
+DA:32,0
+DA:33,0
+DA:36,0
+DA:37,0
+DA:38,0
+DA:50,0
+DA:54,1
+LF:23
+LH:5
+BRDA:6,0,0,0
+BRDA:6,0,1,0
+BRDA:7,1,0,0
+BRDA:7,1,1,0
+BRDA:7,1,2,0
+BRDA:7,1,3,0
+BRDA:11,2,0,0
+BRDA:11,2,1,0
+BRDA:12,3,0,0
+BRDA:12,3,1,0
+BRDA:12,3,2,0
+BRDA:12,3,3,0
+BRDA:16,4,0,0
+BRDA:16,4,1,0
+BRDA:17,5,0,0
+BRDA:17,5,1,0
+BRDA:26,6,0,0
+BRDA:26,6,1,0
+BRDA:33,7,0,0
+BRDA:33,7,1,0
+BRF:20
+BRH:0
+end_of_record
+TN:
+SF:srv\utils\database.js
+FN:5,(anonymous_0)
+FN:22,(anonymous_1)
+FNF:2
+FNH:2
+FNDA:1,(anonymous_0)
+FNDA:1,(anonymous_1)
+DA:1,1
+DA:3,1
+DA:5,1
+DA:6,1
+DA:8,0
+DA:9,0
+DA:11,1
+DA:13,1
+DA:26,1
+LF:9
+LH:7
+BRDA:6,0,0,0
+BRDA:6,0,1,1
+BRF:2
+BRH:1
+end_of_record
