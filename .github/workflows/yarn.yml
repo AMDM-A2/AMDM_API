@@ -19,5 +19,5 @@ jobs:
           node-version: 15
       - run: yarn install
       - run: yarn build
-      - run: yarn start &
+      - run: yarn express:run &
              sleep 2 && yarn test
