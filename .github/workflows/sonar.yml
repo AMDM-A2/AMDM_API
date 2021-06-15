@@ -23,6 +23,7 @@ jobs:
              sleep 5 && yarn coverage  
   scan:
     name: scan
+    needs: coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
