@@ -19,13 +19,7 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
               "valeur"      INTEGER NOT NULL,
               PRIMARY KEY ("id" AUTOINCREMENT)
             );`,
-    (err) => {
-      if (err) {
-        // Table already created
-      } else {
-        // Table just created, creating some rows
-      }
-    })
+    (err) => {})
   }
 })
 
