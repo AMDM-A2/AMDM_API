@@ -23,7 +23,7 @@ jobs:
              sleep 5 && yarn coverage
       - run: cat coverage.lcov
       - run: ls
-      - uses: actions/download-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: coverage
           path: coverage.lcov
