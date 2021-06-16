@@ -18,7 +18,7 @@
           flat
         >
           <v-toolbar-title v-show="!$vuetify.breakpoint.mobile">Liste de lots</v-toolbar-title>
-          <v-spacer/>
+          <v-spacer v-show="!$vuetify.breakpoint.mobile"/>
           <v-text-field class="mr-2"
             v-model="search"
             clearable
