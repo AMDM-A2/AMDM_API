@@ -4,6 +4,7 @@
                      :items-per-page="5"
                      :loading="loading"
                      :search="search"
+                     :sort-desc="sortDesc"
                      class="mb-8"
                      loading-text="Chargement des données"
                      no-data-text="Aucune donnée"
@@ -16,9 +17,9 @@
           dark
           flat
         >
-          <v-toolbar-title>Liste de lots</v-toolbar-title>
+          <v-toolbar-title v-show="!$vuetify.breakpoint.mobile">Liste de lots</v-toolbar-title>
           <v-spacer/>
-          <v-text-field
+          <v-text-field class="mr-2"
             v-model="search"
             clearable
             flat
@@ -27,13 +28,30 @@
             prepend-inner-icon="mdi-magnify"
             solo-inverted
           ></v-text-field>
+          <v-btn-toggle
+            v-model="sortDesc"
+            mandatory
+          >
+            <v-btn
+              :value="false"
+              color="#8e0088"
+            >
+              <v-icon>mdi-arrow-up</v-icon>
+            </v-btn>
+            <v-btn
+              :value="true"
+              color="#8e0088"
+            >
+              <v-icon>mdi-arrow-down</v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </v-toolbar>
       </template>
 
       <template v-slot:default="props">
         <v-row>
           <v-col
-            v-for="item in props.items.filter(v => v.lotId)"
+            v-for="item in getItems(props)"
             :key="item.lotId"
             cols="12"
           >
@@ -174,7 +192,14 @@ export default {
       loading: true,
       items: [],
       search: '',
-      dialog: {}
+      dialog: {},
+      sortDesc: true
+    }
+  },
+  methods: {
+    getItems (props) {
+      if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
+      else return props.items.filter(v => v.lotId).reverse()
     }
   },
   created () {
