@@ -40,6 +40,6 @@ jobs:
           name: coverage
       - uses: docker://sonarsource/sonar-scanner-cli:latest
         env:
-          GITHUB_TOKEN: "091c379b898e5be2d5202262eec90e1e094ac61b"
-          SONAR_TOKEN: "2a9eeecff6a451e7d3bf83a5db687bcbd0aeb4b5"
-          SONAR_HOST_URL: "http://vps.bizouarn.fr:9000"
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR }}
+          SONAR_HOST_URL: ${{ secrets.URL }}
