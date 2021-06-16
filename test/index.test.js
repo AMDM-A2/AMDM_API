@@ -32,5 +32,11 @@ describe('Test principal', function () {
         assert.strictEqual(response.statusCode, 200)
       })
     })
+    it('API get data verify response', function () {
+      request.get('http://localhost:3000/api/v1/data', (err, response, body) => {
+        if (err) assert.fail('Error while getting API')
+        assert.ok((String)(body).includes('{"lotId":"12913","productA":5,"totalProductA":5}'))
+      })
+    })
   })
 })
