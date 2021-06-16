@@ -6,6 +6,7 @@
                      :loading="loading"
                      :search="search"
                      :sort-desc="sortDesc"
+                     :style="$vuetify.breakpoint.xl ? null : 'width: 100%'"
                      class="mb-8"
                      loading-text="Chargement des données"
                      no-data-text="Aucune donnée"
@@ -18,8 +19,8 @@
           dark
           flat
         >
-          <v-toolbar-title v-show="!$vuetify.breakpoint.mobile">Liste de lots</v-toolbar-title>
-          <v-spacer v-show="!$vuetify.breakpoint.mobile"/>
+          <v-toolbar-title v-show="$vuetify.breakpoint.smAndUp">Liste de lots</v-toolbar-title>
+          <v-spacer v-show="$vuetify.breakpoint.smAndUp"/>
           <v-text-field v-model="search"
                         class="mr-2"
                         clearable
