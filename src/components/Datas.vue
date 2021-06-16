@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-data-iterator :items="items"
+    <v-data-iterator :custom-filter="customFilter"
+                     :items="items"
                      :items-per-page="5"
                      :loading="loading"
                      :search="search"
                      :sort-desc="sortDesc"
-                     :custom-filter="customFilter"
                      class="mb-8"
                      loading-text="Chargement des données"
                      no-data-text="Aucune donnée"
@@ -20,14 +20,14 @@
         >
           <v-toolbar-title v-show="!$vuetify.breakpoint.mobile">Liste de lots</v-toolbar-title>
           <v-spacer v-show="!$vuetify.breakpoint.mobile"/>
-          <v-text-field class="mr-2"
-            v-model="search"
-            clearable
-            flat
-            hide-details
-            label="Rechercher"
-            prepend-inner-icon="mdi-magnify"
-            solo-inverted
+          <v-text-field v-model="search"
+                        class="mr-2"
+                        clearable
+                        flat
+                        hide-details
+                        label="Rechercher"
+                        prepend-inner-icon="mdi-magnify"
+                        solo-inverted
           ></v-text-field>
           <v-btn-toggle
             v-model="sortDesc"
@@ -99,13 +99,18 @@
               <v-divider></v-divider>
 
               <v-list dense>
-                <v-data-table :items="item.data"
-                              :headers="[
+                <v-data-table :headers="[
                                 {text: 'Nom', value: 'typeProduit'},
                                 {text: 'Dernier', value: 'valeur'},
+                                {text: 'Heure', value: 'heure'},
                                 {text: 'Somme', value: 'sum'}
                               ]"
-                              hide-default-footer/>
+                              :items="item.data"
+                              hide-default-footer>
+                  <template v-slot:[`item.heure`]="{item}">
+                    <span>{{ item.heure | luxon(settings) }}</span>
+                  </template>
+                </v-data-table>
               </v-list>
             </v-card>
           </v-col>
@@ -128,7 +133,11 @@ export default {
       items: [],
       search: '',
       dialog: {},
-      sortDesc: true
+      sortDesc: true,
+      settings: {
+        input: { format: 'yyyy-MM-dd HH:mm:ss', locale: 'fr', zone: 'local' },
+        output: { locale: 'fr', format: 'dd/MM/yyyy HH:mm:ss', zone: 'local' }
+      }
     }
   },
   methods: {
@@ -136,8 +145,8 @@ export default {
       return item.filter(v => JSON.stringify(v).toUpperCase().includes(search.toUpperCase()))
     },
     getItems (props) {
-      if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
-      else return props.items.filter(v => v.lotId).reverse()
+      if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId).reverse()
+      else return props.items.filter(v => v.lotId)
     }
   },
   created () {

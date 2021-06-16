@@ -5,10 +5,12 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueApexCharts from 'vue-apexcharts'
 import './registerServiceWorker'
+import VueLuxon from 'vue-luxon'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(VueApexCharts)
+Vue.use(VueLuxon)
 
 Vue.component('apexchart', VueApexCharts)
 
