@@ -5,6 +5,7 @@
                      :loading="loading"
                      :search="search"
                      :sort-desc="sortDesc"
+                     :custom-filter="customFilter"
                      class="mb-8"
                      loading-text="Chargement des données"
                      no-data-text="Aucune donnée"
@@ -98,79 +99,13 @@
               <v-divider></v-divider>
 
               <v-list dense>
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Alertes / Défaut :</v-list-item-content>
-                  <v-list-item-content v-if="item.alert" class="align-end">
-                    {{ item.alert }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-divider class="ml-4 mr-4"/>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Produit A :</v-list-item-content>
-                  <v-list-item-content v-if="item.productA" class="align-end">
-                    {{ item.productA }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Produit B :</v-list-item-content>
-                  <v-list-item-content v-if="item.productB" class="align-end">
-                    {{ item.productB }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Produit C :</v-list-item-content>
-                  <v-list-item-content v-if="item.productC" class="align-end">
-                    {{ item.productC }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-divider class="ml-4 mr-4"/>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Total Produit A :</v-list-item-content>
-                  <v-list-item-content v-if="item.totalProductA" class="align-end">
-                    {{ item.totalProductA }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Total Produit B :</v-list-item-content>
-                  <v-list-item-content v-if="item.totalProductB" class="align-end">
-                    {{ item.totalProductB }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item>
-                  <v-list-item-content class="font-weight-bold">Total Produit C :</v-list-item-content>
-                  <v-list-item-content v-if="item.totalProductC" class="align-end">
-                    {{ item.totalProductC }}
-                  </v-list-item-content>
-                  <v-list-item-content v-else class="align-end grey--text">
-                    Aucune donnée
-                  </v-list-item-content>
-                </v-list-item>
+                <v-data-table :items="item.data"
+                              :headers="[
+                                {text: 'Nom', value: 'typeProduit'},
+                                {text: 'Dernier', value: 'valeur'},
+                                {text: 'Somme', value: 'sum'}
+                              ]"
+                              hide-default-footer/>
               </v-list>
             </v-card>
           </v-col>
@@ -197,6 +132,9 @@ export default {
     }
   },
   methods: {
+    customFilter (item, search) {
+      return item.filter(v => JSON.stringify(v).toUpperCase().includes(search.toUpperCase()))
+    },
     getItems (props) {
       if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
       else return props.items.filter(v => v.lotId).reverse()
