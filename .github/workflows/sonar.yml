@@ -1,10 +1,12 @@
 name: coverage scan
+
 on:
   push:
     branches:
       - main # or the name of your main branch
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   coverage:
     name: coverage
@@ -21,8 +23,6 @@ jobs:
       - run: yarn build
       - run: yarn express:run &
              sleep 5 && yarn coverage
-      - run: cat coverage.lcov
-      - run: ls
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
@@ -38,7 +38,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: coverage
-      - run: cat coverage.lcov
       - uses: docker://sonarsource/sonar-scanner-cli:latest
         env:
           GITHUB_TOKEN: "091c379b898e5be2d5202262eec90e1e094ac61b"
