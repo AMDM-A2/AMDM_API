@@ -2,17 +2,17 @@ const db = require('../utils/database.js')
 const express = require('express')
 const app = express()
 
-function getLastProduct (rows, product) {
+app.getLastProduct = function (rows, product) {
   const tmp = rows.filter(v => v && v.identifiant === product).sort((a, b) => a.hour.localeCompare(b.hour))
   return (tmp && tmp.length && tmp[tmp.length - 1].valeur) || undefined
 }
 
-function getLastAlert (rows) {
+app.getLastAlert = function (rows) {
   const tmp = rows.filter(v => v && v.identifiant === 'alert').sort((a, b) => a.hour.localeCompare(b.hour))
   return (tmp && tmp.length && tmp[tmp.length - 1].valeur) || undefined
 }
 
-function getProductSum (rows, product) {
+app.getProductSum = function (rows, product) {
   const tmp = rows.filter(v => v && v.identifiant === product).reduce((v, i) => v + i.valeur, 0)
   return tmp || undefined
 }
@@ -37,13 +37,13 @@ app.get('/data', function (req, res, next) {
     for (const r in lots) {
       finalLots.push({
         lotId: r,
-        alert: getLastAlert(lots[r]),
-        productA: getLastProduct(lots[r], 'produitA'),
-        productB: getLastProduct(lots[r], 'produitB'),
-        productC: getLastProduct(lots[r], 'produitC'),
-        totalProductA: getProductSum(lots[r], 'produitA'),
-        totalProductB: getProductSum(lots[r], 'produitB'),
-        totalProductC: getProductSum(lots[r], 'produitC')
+        alert: app.getLastAlert(lots[r]),
+        productA: app.getLastProduct(lots[r], 'produitA'),
+        productB: app.getLastProduct(lots[r], 'produitB'),
+        productC: app.getLastProduct(lots[r], 'produitC'),
+        totalProductA: app.getProductSum(lots[r], 'produitA'),
+        totalProductB: app.getProductSum(lots[r], 'produitB'),
+        totalProductC: app.getProductSum(lots[r], 'produitC')
       })
     }
 

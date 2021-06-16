@@ -8,7 +8,6 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     console.error(err.message)
     throw err
   } else {
-    console.log('Connected to the SQLite database.')
     // create table if not exist
     db.run(`CREATE TABLE "Gestion"
             (
@@ -19,6 +18,7 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
               "valeur"      INTEGER NOT NULL,
               PRIMARY KEY ("id" AUTOINCREMENT)
             );`,
+    // eslint-disable-next-line node/handle-callback-err
     (err) => {})
   }
 })
