@@ -3,9 +3,9 @@ const express = require('express')
 const app = express()
 
 /* GET API page. */
+/* ignore coverage because test was not detected */
+/* istanbul ignore next */
 app.get('/data', function (req, res, next) {
-  /* ignore coverage because test was not detected */
-  /* istanbul ignore next */
   const sql = `
     SELECT numeroLot,
            typeProduit,
