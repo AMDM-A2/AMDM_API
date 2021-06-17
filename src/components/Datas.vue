@@ -32,6 +32,13 @@
           dark
           flat
         >
+          <v-progress-linear
+            :active="loading"
+            :indeterminate="loading"
+            absolute
+            bottom
+            color="yellow"
+          ></v-progress-linear>
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-text-field v-model="search"
                         class="mr-2"
@@ -181,8 +188,8 @@ export default {
       return item.filter(v => JSON.stringify(v).toUpperCase().includes(search.toUpperCase()))
     },
     getItems (props) {
-      if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId).reverse()
-      else return props.items.filter(v => v.lotId)
+      if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
+      else return props.items.filter(v => v.lotId).reverse()
     }
   },
   created () {

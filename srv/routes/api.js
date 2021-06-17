@@ -78,7 +78,7 @@ app.get('/data', function (req, res, next) {
         }
       }
 
-      return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 100))
+      return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 300))
     } catch (err) {
       return res.status(500).json({ message: err })
     }
