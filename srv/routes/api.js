@@ -9,33 +9,33 @@ app.get('/data', function (req, res, next) {
            typeProduit,
            MAX(heure) as heure,
            (SELECT valeur
-            from Produits t2
+            FROM Produits t2
             WHERE t1.typeProduit = t2.typeProduit
               AND t1.numeroLot = t2.numeroLot
               AND t1.heure = t2.heure
            )          as valeur,
            (SELECT SUM(valeur)
-            from Produits t3
+            FROM Produits t3
             WHERE t1.typeProduit = t3.typeProduit
               AND t1.numeroLot = t3.numeroLot
            )          as sum
-    from Produits t1
-    group by numeroLot, typeProduit
+    FROM Produits t1
+    GROUP BY numeroLot, typeProduit
     UNION
     SELECT numeroLot,
            "alert"    as typeProduit,
            MAX(heure) as heure,
            (SELECT valeur
-            from Alertes t2
+            FROM Alertes t2
             WHERE t1.numeroLot = t2.numeroLot
               AND t1.heure = t2.heure
            )          as valeur,
            (SELECT SUM(valeur)
-            from Alertes t3
+            FROM Alertes t3
             WHERE t1.numeroLot = t3.numeroLot
            )          as sum
-    from Alertes t1
-    group by numeroLot, typeProduit`
+    FROM Alertes t1
+    GROUP BY numeroLot, typeProduit`
 
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -55,7 +55,7 @@ app.get('/data', function (req, res, next) {
     for (const lot in lots) {
       finalLots.push({ lotId: lot, data: lots[lot] })
     }
-    return res.json(finalLots)
+    return res.json(finalLots.splice(0, 100))
   })
 })
 
