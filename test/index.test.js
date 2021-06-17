@@ -35,61 +35,7 @@ describe('Test principal', function () {
     it('get data verify body', function () {
       request.get('http://localhost:3000/api/v1/data', (err, response, body) => {
         if (err) assert.fail('Error while getting API')
-        assert.ok((String)(body).includes('{"lotId":"12913","productA":5,"totalProductA":5}'))
-      })
-    })
-    describe('API get last product', function () {
-      it('NULL', function () {
-        assert.equal(api.getLastProduct([], 'produitA'), undefined)
-      })
-      it('NORMAL', function () {
-        assert.equal(api.getLastProduct([{
-          numeroLot: 12912,
-          identifiant: 'produitA',
-          hour: '2021-06-11 22:07:19',
-          valeur: 32
-        }, {
-          numeroLot: 12912,
-          identifiant: 'produitA',
-          hour: '2021-06-10 05:37:03',
-          valeur: 45
-        }], 'produitA'), 32)
-      })
-    })
-    describe('API get last alert', function () {
-      it('NULL', function () {
-        assert.equal(api.getLastAlert([], 'produitA'), undefined)
-      })
-      it('NORMAL', function () {
-        assert.equal(api.getLastAlert([{
-          numeroLot: 12912,
-          identifiant: 'alert',
-          hour: '2021-06-11 22:07:19',
-          valeur: 65
-        }, {
-          numeroLot: 12912,
-          identifiant: 'alert',
-          hour: '2021-06-10 05:37:03',
-          valeur: 45
-        }]), 65)
-      })
-    })
-    describe('API get product sum', function () {
-      it('NULL', function () {
-        assert.equal(api.getProductSum([], 'produitA'), undefined)
-      })
-      it('NORMAL', function () {
-        assert.equal(api.getProductSum([{
-          numeroLot: 12912,
-          identifiant: 'produitA',
-          hour: '2021-06-11 22:07:19',
-          valeur: 32
-        }, {
-          numeroLot: 12912,
-          identifiant: 'produitA',
-          hour: '2021-06-10 05:37:03',
-          valeur: 45
-        }], 'produitA'), 77)
+        assert.ok((String)(body).includes('{"lotId":"12912","data":[{"typeProduit":"Alert","heure":"2021-06-11 23:09:52","valeur":35,"sum":956},{"typeProduit":"Produit A","heure":"2021-06-11 23:53:46","valeur":31,"sum":705},{"typeProduit":"Produit B","heure":"2021-06-11 22:56:42","valeur":43,"sum":611},{"typeProduit":"Produit C","heure":"2021-06-11 22:28:21","valeur":18,"sum":594}]}'))
       })
     })
   })
