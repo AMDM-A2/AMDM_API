@@ -1,12 +1,19 @@
 <template>
   <v-container>
+    <v-navigation-drawer
+      fixed
+      v-model="drawer"
+      width="290"
+    >
+      <v-date-picker range color="#8e0088" v-model="dates"></v-date-picker>
+    </v-navigation-drawer>
     <v-data-iterator :custom-filter="customFilter"
                      :items="items"
                      :items-per-page="5"
                      :loading="loading"
                      :search="search"
                      :sort-desc="sortDesc"
-                     :style="$vuetify.breakpoint.xl ? null : 'width: 100%'"
+                     :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
                      class="mb-8"
                      loading-text="Chargement des données"
                      no-data-text="Aucune donnée"
@@ -19,8 +26,7 @@
           dark
           flat
         >
-          <v-toolbar-title v-show="$vuetify.breakpoint.smAndUp">Liste de lots</v-toolbar-title>
-          <v-spacer v-show="$vuetify.breakpoint.smAndUp"/>
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-text-field v-model="search"
                         class="mr-2"
                         clearable
@@ -101,7 +107,7 @@
 
               <v-list dense>
                 <v-data-table :headers="[
-                                {text: 'Nom', value: 'typeProduit'},
+                                {text: 'Nom', value: 'libelle'},
                                 {text: 'Dernier', value: 'valeur'},
                                 {text: 'Heure', value: 'heure'},
                                 {text: 'Somme', value: 'sum'}
@@ -131,6 +137,8 @@ export default {
     return {
       // Iterator
       loading: true,
+      dates: [],
+      drawer: false,
       items: [],
       search: '',
       dialog: {},

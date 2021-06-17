@@ -7,37 +7,34 @@ const app = express()
 /* istanbul ignore next */
 app.get('/data', function (req, res, next) {
   const sql = `
-    SELECT numeroLot,
-           typeProduit,
+    SELECT idLot,
+           libelle,
            MAX(heure) as heure,
            (SELECT valeur
-            FROM Produits t2
-            WHERE t1.typeProduit = t2.typeProduit
-              AND t1.numeroLot = t2.numeroLot
+            FROM Capteurs t2
+            WHERE t1.libelle = t2.libelle
+              AND t1.idLot = t2.idLot
               AND t1.heure = t2.heure
            )          as valeur,
            (SELECT SUM(valeur)
-            FROM Produits t3
-            WHERE t1.typeProduit = t3.typeProduit
-              AND t1.numeroLot = t3.numeroLot
+            FROM Capteurs t3
+            WHERE t1.libelle = t3.libelle
+              AND t1.idLot = t3.idLot
            )          as sum
-    FROM Produits t1
-    GROUP BY numeroLot, typeProduit
+    FROM Capteurs t1
+    GROUP BY idLot, libelle
     UNION
-    SELECT numeroLot,
-           "alert"    as typeProduit,
+    SELECT idLot,
+           "alert"    as libelle,
            MAX(heure) as heure,
-           (SELECT valeur
+           (SELECT description
             FROM Alertes t2
-            WHERE t1.numeroLot = t2.numeroLot
+            WHERE t1.idLot = t2.idLot
               AND t1.heure = t2.heure
            )          as valeur,
-           (SELECT SUM(valeur)
-            FROM Alertes t3
-            WHERE t1.numeroLot = t3.numeroLot
-           )          as sum
+           count(*) as sum
     FROM Alertes t1
-    GROUP BY numeroLot, typeProduit`
+    GROUP BY idLot, libelle`
 
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -48,10 +45,10 @@ app.get('/data', function (req, res, next) {
     const lots = {}
     for (const row of rows) {
       const tmp = { ...{}, ...row }
-      tmp.typeProduit = tmp.typeProduit.replace(/([A-Z])/g, ' $1')
-      tmp.typeProduit = tmp.typeProduit.charAt(0).toUpperCase() + tmp.typeProduit.slice(1)
-      delete tmp.numeroLot
-      lots[row.numeroLot] && lots[row.numeroLot].length ? lots[row.numeroLot].push(tmp) : lots[row.numeroLot] = [tmp]
+      tmp.libelle = tmp.libelle.replace(/([A-Z])/g, ' $1')
+      tmp.libelle = tmp.libelle.charAt(0).toUpperCase() + tmp.libelle.slice(1)
+      delete tmp.idLot
+      lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
     }
     const finalLots = []
     for (const lot in lots) {
