@@ -1,5 +1,6 @@
 const db = require('../utils/database.js')
 const express = require('express')
+const { DateTime } = require('luxon')
 const app = express()
 
 /* GET API page. */
@@ -32,7 +33,7 @@ app.get('/data', function (req, res, next) {
             WHERE t1.idLot = t2.idLot
               AND t1.heure = t2.heure
            )          as valeur,
-           count(*) as sum
+           count(*)   as sum
     FROM Alertes t1
     GROUP BY idLot, libelle`
 
@@ -42,19 +43,45 @@ app.get('/data', function (req, res, next) {
       return
     }
 
-    const lots = {}
-    for (const row of rows) {
-      const tmp = { ...{}, ...row }
-      tmp.libelle = tmp.libelle.replace(/([A-Z])/g, ' $1')
-      tmp.libelle = tmp.libelle.charAt(0).toUpperCase() + tmp.libelle.slice(1)
-      delete tmp.idLot
-      lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
+    try {
+      const lots = {}
+      for (const row of rows) {
+        const tmp = { ...{}, ...row }
+        tmp.libelle = tmp.libelle.replace(/([A-Z])/g, ' $1')
+        tmp.libelle = tmp.libelle.charAt(0).toUpperCase() + tmp.libelle.slice(1)
+        delete tmp.idLot
+        lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
+      }
+      const finalLots = []
+      for (const lot in lots) {
+        if (req.query.firstDate && req.query.firstDate.length && req.query.lastDate && req.query.lastDate.length) {
+          let debut = DateTime.fromISO(req.query.firstDate, { locale: 'fr' })
+          let fin = DateTime.fromISO(req.query.lastDate, { locale: 'fr' })
+          if (debut > fin) {
+            const tmpFin = fin
+            fin = debut
+            debut = tmpFin
+          }
+
+          const dateArray = lots[lot] && lots[lot].length
+            ? lots[lot].map(v => DateTime.fromFormat(v.heure.split(' ')[0], 'yyyy-MM-dd', { locale: 'fr' }))
+            : []
+
+          for (const date of dateArray) {
+            if (date >= debut && date <= fin) {
+              finalLots.push({ lotId: lot, data: lots[lot] })
+              break
+            }
+          }
+        } else {
+          finalLots.push({ lotId: lot, data: lots[lot] })
+        }
+      }
+
+      return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 100))
+    } catch (err) {
+      return res.status(500).json({ message: err })
     }
-    const finalLots = []
-    for (const lot in lots) {
-      finalLots.push({ lotId: lot, data: lots[lot] })
-    }
-    return res.json(finalLots.splice(0, 100))
   })
 })
 

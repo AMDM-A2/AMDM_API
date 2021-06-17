@@ -1,11 +1,20 @@
 <template>
   <v-container>
     <v-navigation-drawer
-      fixed
       v-model="drawer"
+      clipped
+      fixed
       width="290"
     >
-      <v-date-picker range color="#8e0088" v-model="dates"></v-date-picker>
+      <div :style="!$vuetify.breakpoint.mobile ? `margin-top: ${$vuetify.application.top}px` : null"
+           class="d-flex justify-center align-content-center flex-column">
+        <v-date-picker v-model="dates" color="#8e0088" locale="fr" range
+                       selected-items-text="Sélection"></v-date-picker>
+        <v-btn class="ml-4 mr-4" color="#8e0088" outlined @click="dates = []; fetchData()">
+          <v-icon class="mr-1">mdi-refresh</v-icon>
+          Réinitialiser
+        </v-btn>
+      </div>
     </v-navigation-drawer>
     <v-data-iterator :custom-filter="customFilter"
                      :items="items"
@@ -15,9 +24,6 @@
                      :sort-desc="sortDesc"
                      :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
                      class="mb-8"
-                     loading-text="Chargement des données"
-                     no-data-text="Aucune donnée"
-                     no-results-text="Aucun résultat"
     >
       <template v-slot:header>
         <v-toolbar
@@ -149,7 +155,28 @@ export default {
       }
     }
   },
+  watch: {
+    dates () {
+      if (this.dates) {
+        if (this.dates.length === 1) {
+          this.fetchData(this.dates[0], this.dates[0])
+        } else if (this.dates.length === 2) {
+          this.fetchData(this.dates[0], this.dates[1])
+        }
+      }
+    }
+  },
   methods: {
+    fetchData (date1, date2) {
+      this.loading = true
+      const req = date1 && date2 ? `/api/v1/data?firstDate=${date1}&lastDate=${date2}` : '/api/v1/data'
+      this.axios.get(req).then(v => {
+        this.items = v.data
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
     customFilter (item, search) {
       return item.filter(v => JSON.stringify(v).toUpperCase().includes(search.toUpperCase()))
     },
@@ -159,12 +186,7 @@ export default {
     }
   },
   created () {
-    this.axios.get('/api/v1/data').then(v => {
-      this.items = v.data
-      this.loading = false
-    }).catch(() => {
-      this.loading = false
-    })
+    this.fetchData()
   }
 }
 </script>
