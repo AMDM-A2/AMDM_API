@@ -45,7 +45,7 @@
                         clearable
                         flat
                         hide-details
-                        label="Rechercher"
+                        label="Rechercher un numéro"
                         prepend-inner-icon="mdi-magnify"
                         solo-inverted
           ></v-text-field>
@@ -185,7 +185,8 @@ export default {
       })
     },
     customFilter (item, search) {
-      return item.filter(v => JSON.stringify(v).toUpperCase().includes(search.toUpperCase()))
+      if (!search || (search && !search.length)) return item
+      return item.filter(v => v.lotId.toString().includes(search.toString()))
     },
     getItems (props) {
       if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
