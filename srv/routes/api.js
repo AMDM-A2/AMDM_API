@@ -92,8 +92,8 @@ app.get('/data', function (req, res, next) {
 app.get('/data/:id', function (req, res, next) {
   const sql = 'SELECT id, heure, libelle, valeur FROM Capteurs WHERE idLot = ? ORDER BY heure'
 
-  // eslint-disable-next-line node/handle-callback-err
   db.all(sql, [req.params.id], (err, rows) => {
+    if (err) return res.status(500).json({ message: err })
     const rettmp = {}
     for (const row of rows) {
       if (rettmp[row.libelle] === undefined) {
@@ -105,7 +105,6 @@ app.get('/data/:id', function (req, res, next) {
     for (const row in rettmp) {
       ret.push(rettmp[row])
     }
-    // ret = ret.map(v => v.data.sort((a, b) => DateTime.fromMillis(a[0]) > DateTime.fromMillis(b[0])))
     return res.json(ret.sort((a, b) => a.name.localeCompare(b.name)))
   })
 })
