@@ -1,26 +1,34 @@
 <template>
   <v-container>
     <v-navigation-drawer
+      right
       v-model="drawer"
       clipped
       fixed
       width="290"
     >
-      <div :style="!$vuetify.breakpoint.mobile ? `margin-top: ${$vuetify.application.top}px` : null"
-           class="d-flex justify-center align-content-center flex-column">
+      <div :style="!$vuetify.breakpoint.mobile ? `margin-top: ${$vuetify.application.top}px` : null">
         <v-date-picker v-model="dates" color="#8e0088" locale="fr" range
                        selected-items-text="Sélection"></v-date-picker>
-        <v-btn class="ml-4 mr-4" color="#8e0088" outlined @click="dates = []; fetchData()">
+        <div class="pa-2">
+        <v-btn block color="#8e0088" outlined @click="dates = []; fetchData()">
           <v-icon class="mr-1">mdi-refresh</v-icon>
           Réinitialiser
         </v-btn>
+        </div>
       </div>
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn text block @click="drawer = false" color="#8e0088"><v-icon class="mr-1">mdi-close</v-icon>Fermer</v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
     <v-data-iterator :custom-filter="customFilter"
                      :items="items"
                      :items-per-page="5"
                      :loading="loading"
                      :search="search"
+                     loading-text="Chargement des données..."
                      :sort-desc="sortDesc"
                      :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
                      class="mb-8"
@@ -39,7 +47,6 @@
             bottom
             color="yellow"
           ></v-progress-linear>
-          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-text-field v-model="search"
                         class="mr-2"
                         clearable
@@ -50,6 +57,7 @@
                         solo-inverted
           ></v-text-field>
           <v-btn-toggle
+            class="mr-4"
             v-model="sortDesc"
             mandatory
           >
@@ -66,6 +74,7 @@
               <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
           </v-btn-toggle>
+          <v-icon @click.stop="drawer = !drawer">mdi-filter</v-icon>
         </v-toolbar>
       </template>
 
@@ -122,13 +131,13 @@
                 <v-data-table :headers="[
                                 {text: 'Nom', value: 'libelle'},
                                 {text: 'Dernier', value: 'valeur'},
-                                {text: 'Heure', value: 'heure'},
+                                {text: 'Heure', value: 'date'},
                                 {text: 'Somme', value: 'sum'}
                               ]"
                               :items="item.data"
                               hide-default-footer>
-                  <template v-slot:[`item.heure`]="{item}">
-                    <span>{{ item.heure | luxon(settings) }}</span>
+                  <template v-slot:[`item.date`]="{item}">
+                    <span>{{ item.date | luxon(settings) }}</span>
                   </template>
                 </v-data-table>
               </v-list>

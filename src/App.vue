@@ -3,7 +3,7 @@
     <v-app-bar
       app
       color="white"
-      clipped-left
+      clipped-right
     >
       <v-img
         alt="Logo"

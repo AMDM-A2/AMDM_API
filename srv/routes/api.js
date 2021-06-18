@@ -14,83 +14,99 @@ function cleanString (t) {
 app.get('/data', function (req, res, next) {
   const sql = `
     SELECT idLot,
-           libelle,
-           MAX(heure) as heure,
+           t4.libelle,
+           MAX(date) as date,
            (SELECT valeur
-            FROM Capteurs t2
-            WHERE t1.libelle = t2.libelle
+            FROM Data t2
+            WHERE t1.capteur = t2.capteur
               AND t1.idLot = t2.idLot
-              AND t1.heure = t2.heure
-           )          as valeur,
+              AND t1.date = t2.date
+           )         as valeur,
            (SELECT SUM(valeur)
-            FROM Capteurs t3
-            WHERE t1.libelle = t3.libelle
+            FROM Data t3
+            WHERE t1.capteur = t3.capteur
               AND t1.idLot = t3.idLot
-           )          as sum
-    FROM Capteurs t1
-    GROUP BY idLot, libelle
-    UNION
+           )         as sum
+    FROM Data t1,
+         Capteurs t4
+    WHERE t1.capteur = t4.id
+    GROUP BY idLot, capteur
+    LIMIT 300
+  `
+
+  const sql2 = `
     SELECT idLot,
-           "alert"    as libelle,
-           MAX(heure) as heure,
+           "alert"   as libelle,
+           MAX(date) as date,
            (SELECT description
             FROM Alertes t2
             WHERE t1.idLot = t2.idLot
-              AND t1.heure = t2.heure
-           )          as valeur,
-           count(*)   as sum
+              AND t1.date = t2.date
+           )         as valeur,
+           COUNT(*)  as sum
     FROM Alertes t1
-    GROUP BY idLot, libelle`
+    GROUP BY idLot, libelle
+    LIMIT 300`
 
-  db.all(sql, [], (err, rows) => {
+  db.all(sql, [], (err, rows1) => {
     if (err) {
-      res.status(400).json({ error: err.message })
+      res.status(400).json({ error: err })
       return
     }
 
-    try {
-      const lots = {}
-      for (const row of rows) {
-        const tmp = { ...{}, ...row }
-        tmp.libelle = cleanString(tmp.libelle)
-        delete tmp.idLot
-        lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
+    db.all(sql2, [], (err, rows2) => {
+      if (err) {
+        res.status(400).json({ error: err })
+        return
       }
-      const finalLots = []
-      for (const lot in lots) {
-        if (req.query.firstDate && req.query.firstDate.length && req.query.lastDate && req.query.lastDate.length) {
-          let debut = DateTime.fromISO(req.query.firstDate, { locale: 'fr' })
-          let fin = DateTime.fromISO(req.query.lastDate, { locale: 'fr' })
-          if (debut > fin) {
-            const tmpFin = fin
-            fin = debut
-            debut = tmpFin
-          }
 
-          const dateArray = lots[lot] && lots[lot].length
-            ? lots[lot].map(v => DateTime.fromFormat(v.heure.split(' ')[0], 'yyyy-MM-dd', { locale: 'fr' }))
-            : []
+      const rows = rows1.concat(rows2)
 
-          for (const date of dateArray) {
-            if (date >= debut && date <= fin) {
-              finalLots.push({ lotId: lot, data: lots[lot] })
-              break
-            }
-          }
-        } else {
-          finalLots.push({ lotId: lot, data: lots[lot] })
+      try {
+        const lots = {}
+        for (const row of rows) {
+          const tmp = { ...{}, ...row }
+          tmp.libelle = cleanString(tmp.libelle)
+          delete tmp.idLot
+          lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
         }
-      }
+        const finalLots = []
+        for (const lot in lots) {
+          if (req.query.firstDate && req.query.firstDate.length && req.query.lastDate && req.query.lastDate.length) {
+            let debut = DateTime.fromISO(req.query.firstDate, { locale: 'fr' })
+            let fin = DateTime.fromISO(req.query.lastDate, { locale: 'fr' })
+            if (debut > fin) {
+              const tmpFin = fin
+              fin = debut
+              debut = tmpFin
+            }
 
-      return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 300))
-    } catch (err) {
-      return res.status(500).json({ message: err })
-    }
+            const dateArray = lots[lot] && lots[lot].length
+              ? lots[lot].map(v => DateTime.fromFormat(v.date.split(' ')[0], 'yyyy-MM-dd', { locale: 'fr' }))
+              : []
+
+            for (const date of dateArray) {
+              if (date >= debut && date <= fin) {
+                finalLots.push({ lotId: lot, data: lots[lot] })
+                break
+              }
+            }
+          } else {
+            finalLots.push({ lotId: lot, data: lots[lot] })
+          }
+        }
+
+        return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 300))
+      } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: err })
+      }
+    })
   })
 })
 /* istanbul ignore next */
-app.get('/data/:id', function (req, res, next) {
-  const sql = 'SELECT id, heure, libelle, valeur FROM Capteurs WHERE idLot = ? ORDER BY heure'
+app.get('/services/lots/:id/data', function (req, res, next) {
+  const sql = 'SELECT data.id, date, libelle, valeur FROM Data, Capteurs WHERE Data.capteur = Capteurs.id AND Data.idlot = ? ORDER BY date'
 
   db.all(sql, [req.params.id], (err, rows) => {
     if (err) return res.status(500).json({ message: err })
@@ -99,7 +115,7 @@ app.get('/data/:id', function (req, res, next) {
       if (rettmp[row.libelle] === undefined) {
         rettmp[row.libelle] = { name: cleanString(row.libelle), data: [] }
       }
-      rettmp[row.libelle].data.push([DateTime.fromFormat(row.heure, 'yyyy-MM-dd HH:mm:ss', { locale: 'fr' }).toMillis(), row.valeur])
+      rettmp[row.libelle].data.push([DateTime.fromFormat(row.date, 'yyyy-MM-dd HH:mm:ss', { locale: 'fr' }).toMillis(), row.valeur])
     }
     const ret = []
     for (const row in rettmp) {

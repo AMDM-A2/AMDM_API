@@ -11,7 +11,7 @@ export default {
   name: 'Graphic',
   props: ['value'],
   created () {
-    this.axios.get('/api/v1/data/' + this.value.lotId).then((v) => {
+    this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
       this.series = v.data.map(v => ({ name: v.name, data: v.data }))
     })
   },
