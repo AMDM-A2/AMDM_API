@@ -84,5 +84,14 @@ app.get('/data', function (req, res, next) {
     }
   })
 })
+/* istanbul ignore next */
+app.get('/data/:id', function (req, res, next) {
+  const sql = 'SELECT id, heure, libelle, valeur FROM Capteurs WHERE idLot = ?'
+
+  // eslint-disable-next-line node/handle-callback-err
+  db.all(sql, [req.params.id], (err, rows) => {
+    return res.json(rows)
+  })
+})
 
 module.exports = app
