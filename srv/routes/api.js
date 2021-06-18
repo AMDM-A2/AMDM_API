@@ -3,6 +3,11 @@ const express = require('express')
 const { DateTime } = require('luxon')
 const app = express()
 
+function cleanString (t) {
+  const tmp = t.replace(/([A-Z])/g, ' $1')
+  return tmp.charAt(0).toUpperCase() + tmp.slice(1)
+}
+
 /* GET API page. */
 /* ignore coverage because test was not detected */
 /* istanbul ignore next */
@@ -47,8 +52,7 @@ app.get('/data', function (req, res, next) {
       const lots = {}
       for (const row of rows) {
         const tmp = { ...{}, ...row }
-        tmp.libelle = tmp.libelle.replace(/([A-Z])/g, ' $1')
-        tmp.libelle = tmp.libelle.charAt(0).toUpperCase() + tmp.libelle.slice(1)
+        tmp.libelle = cleanString(tmp.libelle)
         delete tmp.idLot
         lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
       }
@@ -86,14 +90,14 @@ app.get('/data', function (req, res, next) {
 })
 /* istanbul ignore next */
 app.get('/data/:id', function (req, res, next) {
-  const sql = 'SELECT id, heure, libelle, valeur FROM Capteurs WHERE idLot = ?'
+  const sql = 'SELECT id, heure, libelle, valeur FROM Capteurs WHERE idLot = ? ORDER BY heure'
 
   // eslint-disable-next-line node/handle-callback-err
   db.all(sql, [req.params.id], (err, rows) => {
     const rettmp = {}
     for (const row of rows) {
       if (rettmp[row.libelle] === undefined) {
-        rettmp[row.libelle] = { name: row.libelle, data: [] }
+        rettmp[row.libelle] = { name: cleanString(row.libelle), data: [] }
       }
       rettmp[row.libelle].data.push([DateTime.fromFormat(row.heure, 'yyyy-MM-dd HH:mm:ss', { locale: 'fr' }).toMillis(), row.valeur])
     }
@@ -101,7 +105,8 @@ app.get('/data/:id', function (req, res, next) {
     for (const row in rettmp) {
       ret.push(rettmp[row])
     }
-    return res.json(ret)
+    // ret = ret.map(v => v.data.sort((a, b) => DateTime.fromMillis(a[0]) > DateTime.fromMillis(b[0])))
+    return res.json(ret.sort((a, b) => a.name.localeCompare(b.name)))
   })
 })
 

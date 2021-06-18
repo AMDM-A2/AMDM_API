@@ -82,7 +82,7 @@
                 <v-spacer/>
                 <v-dialog
                   v-model="dialog[item.lotId]"
-                  width="500"
+                  width="600"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -111,7 +111,7 @@
                         <v-icon dark>mdi-close</v-icon>
                       </v-btn>
                     </v-card-title>
-                    <graphic :value="item"/>
+                    <graphic class="pa-4" :value="item"/>
                   </v-card>
                 </v-dialog>
               </v-card-title>
