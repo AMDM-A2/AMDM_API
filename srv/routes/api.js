@@ -90,7 +90,18 @@ app.get('/data/:id', function (req, res, next) {
 
   // eslint-disable-next-line node/handle-callback-err
   db.all(sql, [req.params.id], (err, rows) => {
-    return res.json(rows)
+    const rettmp = {}
+    for (const row of rows) {
+      if (rettmp[row.libelle] === undefined) {
+        rettmp[row.libelle] = { name: row.libelle, data: [] }
+      }
+      rettmp[row.libelle].data.push([DateTime.fromFormat(row.heure, 'yyyy-MM-dd HH:mm:ss', { locale: 'fr' }).toMillis(), row.valeur])
+    }
+    const ret = []
+    for (const row in rettmp) {
+      ret.push(rettmp[row])
+    }
+    return res.json(ret)
   })
 })
 
