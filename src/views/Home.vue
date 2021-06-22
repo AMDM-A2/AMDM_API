@@ -1,15 +1,16 @@
 <template>
   <div class="d-flex flex-column justify-center align-content-center fill-height">
-    <kinesis-container style="text-align: center;">
+    <kinesis-container v-if="!$vuetify.breakpoint.mobile" style="text-align: center;">
       <kinesis-element :strength="20" :style="$vuetify.theme.dark ? 'color: deeppink' : 'color: #8e0088'"
                        style="font-family: Staatliches,sans-serif; font-size: 8vh;">
         <div :class="$vuetify.theme.dark ? 'title_shadow' : null">Malaxage</div>
       </kinesis-element>
-      <kinesis-element :class="$vuetify.theme.dark ? 'title_shadow' : null" :strength="10" style="font-family: Potta One,sans-serif;font-size: 4vh; color: #d53f90"
+      <kinesis-element :class="$vuetify.theme.dark ? 'title_shadow' : null" :strength="10"
+                       style="font-family: Potta One,sans-serif;font-size: 4vh; color: #d53f90"
                        type="rotate">
         1.0
       </kinesis-element>
-      <div @click="b++" :style="`transform: rotate(${size}deg)`">
+      <div :style="`transform: rotate(${size}deg)`" @click="b++">
         <kinesis-element
           :strength="-10"
           axis="x"
@@ -20,6 +21,13 @@
           type="rotate"/>
       </div>
     </kinesis-container>
+    <div v-else style="text-align: center;">
+      <div :class="$vuetify.theme.dark ? 'title_shadow' : null"
+           :style="$vuetify.theme.dark ? 'color: deeppink' : 'color: #8e0088'"
+           style="font-family: Staatliches,sans-serif; font-size: 8vh;">Malaxage
+      </div>
+      <v-img style="margin: auto;" :style="`transform: rotate(${size}deg)`" src="/img/logo.png" width="150px" @click="b++"></v-img>
+    </div>
   </div>
 </template>
 
