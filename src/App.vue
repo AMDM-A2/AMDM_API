@@ -59,7 +59,7 @@
             <v-list-item-title>Statistiques</v-list-item-title>
           </v-list-item>
 
-          <v-list-item link disabled>
+          <v-list-item :to="{name: 'AlertConfig'}">
             <v-list-item-icon>
               <v-icon>mdi-cogs</v-icon>
             </v-list-item-icon>
