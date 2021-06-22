@@ -8,12 +8,14 @@ import './registerServiceWorker'
 import VueLuxon from 'vue-luxon'
 import router from './router'
 import VueKinesis from 'vue-kinesis'
+import VueCookies from 'vue-cookies'
 
 Vue.use(VueKinesis)
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(VueApexCharts)
 Vue.use(VueLuxon)
+Vue.use(VueCookies)
 
 Vue.component('apexchart', VueApexCharts)
 

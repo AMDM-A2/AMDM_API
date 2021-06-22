@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-app-bar
+      :color="$vuetify.theme.dark ? 'black' : 'white'"
       app
       clipped-left
-      color="white"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
       <v-img
@@ -30,10 +30,10 @@
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
+      :expand-on-hover="!$vuetify.breakpoint.mobile"
+      :permanent="!$vuetify.breakpoint.mobile"
       app
       clipped
-      :permanent="!$vuetify.breakpoint.mobile"
-      :expand-on-hover="!$vuetify.breakpoint.mobile"
     >
       <v-list
         dense
@@ -69,7 +69,7 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-main style="background-color: #fafafa">
+    <v-main :style="$vuetify.theme.dark ? 'background-color: #2B2829' : 'background-color: #fafafa'">
       <router-view class="justify-center align-content-center d-flex"/>
     </v-main>
     <v-footer fixed padless>
@@ -85,6 +85,12 @@
 
 <script>
 export default {
+  created () {
+    try {
+      this.$vuetify.theme.dark = JSON.parse(this.$cookies.get('theme')) || false
+    } catch (e) {
+    }
+  },
   watch: {
     group () {
       this.drawer = false
