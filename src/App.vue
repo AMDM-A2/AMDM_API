@@ -33,7 +33,7 @@
       app
       clipped
       :permanent="!$vuetify.breakpoint.mobile"
-      expand-on-hover
+      :expand-on-hover="!$vuetify.breakpoint.mobile"
     >
       <v-list
         dense
