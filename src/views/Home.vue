@@ -26,7 +26,8 @@
            :style="$vuetify.theme.dark ? 'color: deeppink' : 'color: #8e0088'"
            style="font-family: Staatliches,sans-serif; font-size: 8vh;">Malaxage
       </div>
-      <v-img style="margin: auto;" :style="`transform: rotate(${size}deg)`" src="/img/logo.png" width="150px" @click="b++"></v-img>
+      <v-img :style="`transform: rotate(${size}deg)`" src="/img/logo.png" style="margin: auto;" width="150px"
+             @click="b++"></v-img>
     </div>
   </div>
 </template>

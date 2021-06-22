@@ -1,7 +1,7 @@
 <template>
-<div>
-  Configuration
-</div>
+  <div>
+    Configuration
+  </div>
 </template>
 
 <script>
