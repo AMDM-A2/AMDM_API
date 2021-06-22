@@ -6,11 +6,11 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "coverage": " nyc --reporter=text-lcov mocha > coverage.lcov",
     "express": "vue-cli-service express:watch",
     "express:run": "vue-cli-service express:run",
     "production_start": "yarn build && yarn express:run",
-    "test": "mocha ./test/index.test.js",
-    "coverage": " nyc --reporter=text-lcov mocha > coverage.lcov"
+    "test": "mocha ./test/index.test.js"
   },
   "dependencies": {
     "apexcharts": "^3.27.1",
@@ -25,12 +25,14 @@
     "vue-apexcharts": "^1.6.1",
     "vue-axios": "^3.2.4",
     "vue-luxon": "^0.10.0",
+    "vue-router": "^3.2.0",
     "vuetify": "^2.5.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-service": "~4.5.13",
     "@vue/eslint-config-standard": "^6.0.0",
     "babel-eslint": "^10.1.0",
