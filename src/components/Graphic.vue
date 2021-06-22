@@ -12,6 +12,14 @@ export default {
   props: ['value'],
   created () {
     this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
+      let min = v.data[0].date
+      let max = v.data[0].date
+      for (const line of v.data) {
+        if (line.date < min) min = line.date
+        if (line.date > max) max = line.date
+      }
+      this.chartOptions.xaxis.min = min
+      this.chartOptions.xaxis.max = max
       this.series = v.data.map(v => ({ name: v.name, data: v.data }))
     })
   },
@@ -61,8 +69,8 @@ export default {
         xaxis: {
           type: 'datetime',
           tickAmount: 8,
-          min: DateTime.now().setLocale('fr').minus({ month: 3 }).toMillis(),
-          max: DateTime.now().setLocale('fr').toMillis(),
+          min: null,
+          max: null,
           labels: {
             style: {
               fontSize: '11px'
