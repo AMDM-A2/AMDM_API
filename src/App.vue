@@ -43,7 +43,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item :to="{name: 'Home'}">
+          <v-list-item to="/">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
