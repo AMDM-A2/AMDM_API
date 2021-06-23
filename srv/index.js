@@ -1,8 +1,10 @@
+/* istanbul ignore file */
 import express from 'express'
 
 const cors = require('cors')
 
 export default (app) => {
+  app.set('etag', false)
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(cors())
