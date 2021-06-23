@@ -71,14 +71,14 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="blue darken-1"
+                  color="grey darken-1"
                   text
                   @click="dialogAdd = false"
                 >
                   Fermer
                 </v-btn>
                 <v-btn
-                  color="blue darken-1"
+                  color="green darken-1"
                   text
                   @click="dialogAdd = false; createAlert();"
                 >
