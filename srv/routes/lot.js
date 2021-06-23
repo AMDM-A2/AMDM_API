@@ -2,7 +2,9 @@ const db = require('../utils/database.js')
 const express = require('express')
 const app = express()
 
-/* API : Lot : POST */
+/*
+ * API : Lot : POST
+ */
 app.post('/', function (req, res, next) {
   const id = req.body.id
   const description = req.body.description
@@ -27,7 +29,9 @@ app.post('/', function (req, res, next) {
   })
 })
 
-/* API : Lot : PUT */
+/*
+ * API : Lot : PUT
+ */
 app.put('/:id', function (req, res, next) {
   const id = req.params.id
   const description = req.body.description
@@ -35,7 +39,7 @@ app.put('/:id', function (req, res, next) {
   if (!id) return res.status(400).json({ error: 'Bad Request - The parameter \'id\' is required' })
   if (!description) return res.status(400).json({ error: 'Bad Request - The parameter \'description\' is required' })
 
-  const array = [id, description]
+  const array = [description, id]
   const sql = 'UPDATE Lots SET description = ? WHERE id = ?'
 
   db.run(sql, array, (err) => {
