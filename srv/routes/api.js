@@ -138,11 +138,19 @@ app.get('/sensors', function (req, res) {
 })
 
 app.get('/alerts', function (req, res, next) {
-  const sql = 'SELECT * FROM Alertes LIMIT ? OFFSET ?'
-  const nb = req.query.size && !isNaN(req.query.size) ? req.query.size : 10
-  db.all(sql, [nb, req.query.skip && !isNaN(req.query.skip) ? req.query.skip * nb : 0], (err, rows) => {
+  const sql = 'SELECT * FROM Alertes'
+  const search = req.query.search
+  const arr = []
+  db.all(sql, arr, (err, rows) => {
     if (err) return res.status(500).json({ message: err })
-    return res.json({ results: rows, count: parseInt(nb) })
+    if (search && search.length > 0) {
+      return res.json({
+        results: rows.filter(v => v.id.toString().includes(search) ||
+          (v.description != null
+            ? v.description.toUpperCase().includes(search.toUpperCase())
+            : false))
+      })
+    } else return res.json({ results: rows })
   })
 })
 

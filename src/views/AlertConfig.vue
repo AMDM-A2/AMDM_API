@@ -1,42 +1,81 @@
 <template>
-  <div class="mt-4 pa-2 mb-15">
-    <v-list width="600" elevation="5" class="rounded-xl">
-      <v-subheader>Alertes</v-subheader>
-      <v-progress-linear
-        :active="loading"
-        class="ml-2 mr-2"
-        :indeterminate="loading"
-        color="pink"
-      ></v-progress-linear>
-      <v-list-item-group
-        v-model="selectedItem"
-        color="primary"
-      >
-        <v-list-item v-for="(alert) in alerts"
-                     :key="`alert_${alert.id}`"
-                     @click.stop="dialog = true"
+  <v-container>
+    <v-data-iterator :items="alerts" :items-per-page="7"
+                     :loading="loading"
+                     :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
+                     class="mb-8"
+                     loading-text="Chargement des données..."
+    >
+      <template v-slot:header>
+        <v-toolbar
+          class="mb-4"
+          color="primary"
+          dark
+          flat
         >
-          <v-list-item-avatar>
-            <v-icon>mdi-alert</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>Alerte {{ alert.id }}</v-list-item-title>
-            <v-list-item-subtitle style="font-size: 12px">{{ alert.date | luxon(settings) }}</v-list-item-subtitle>
-            <small v-if="alert.description && alert.description.length"
-                   style="font-family: monospace">{{
-                alert.description.slice(0, 25)
-              }}{{ alert.description.length >= 25 ? '...' : '' }}</small>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+          <v-progress-linear
+            :active="loading"
+            :indeterminate="loading"
+            absolute
+            bottom
+            color="yellow"
+          ></v-progress-linear>
+          <v-text-field v-model="search"
+                        class="mr-2"
+                        clearable
+                        flat
+                        hide-details
+                        label="Rechercher un numéro d'alerte"
+                        prepend-inner-icon="mdi-magnify"
+                        solo-inverted
+          ></v-text-field>
+        </v-toolbar>
+      </template>
+      <template v-slot:default="props">
+        <div class="d-flex justify-center align-content-center">
+          <v-list class="rounded-xl" elevation="5" width="100%">
+            <v-subheader>Alertes</v-subheader>
+            <v-progress-linear
+              :active="loading"
+              :indeterminate="loading"
+              class="ml-2 mr-2"
+              color="pink"
+            ></v-progress-linear>
+            <v-list-item-group
+              color="primary"
+            >
+              <v-list-item v-for="alert in props.items"
+                           :key="`alert_${alert.id}`"
+                           @click.stop="dialog = true; selectedItem = alert.id"
+              >
+                <v-list-item-avatar>
+                  <v-icon>mdi-alert</v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>Alerte {{ alert.id }}</v-list-item-title>
+                  <v-list-item-subtitle style="font-size: 12px">{{
+                      alert.date | luxon(settings)
+                    }}
+                  </v-list-item-subtitle>
+                  <small v-if="alert.description && alert.description.length"
+                         style="font-family: monospace">{{
+                      alert.description.slice(0, 25)
+                    }}{{ alert.description.length >= 25 ? '...' : '' }}</small>
+                  <small v-else class="font-italic grey--text">Aucune description</small>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </div>
+      </template>
+    </v-data-iterator>
     <v-dialog
       v-model="dialog"
       max-width="600"
     >
       <v-card>
         <v-card-title class="text-h5">
-          Modifier l'alerte {{ selectedItem + 1 }}
+          Modifier l'alerte {{ selectedItem }}
         </v-card-title>
 
         <v-card-text>
@@ -76,7 +115,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -87,22 +126,26 @@ export default {
       if (this.dialog === false) {
         setTimeout(() => {
           this.selectedItem = null
-        }, 100)
+        }, 50)
       }
     },
     selectedItem () {
       if (this.selectedItem) {
-        this.description = this.alerts.find(v => v.id === (this.selectedItem + 1)).description || ''
+        this.description = this.alerts.find(v => v.id === (this.selectedItem)).description || ''
       }
+    },
+    search () {
+      this.fetchAlerts()
     }
   },
   data () {
     return {
       loading: false,
+      search: '',
       description: '',
       dialog: false,
       selectedItem: null,
-      alerts: null,
+      alerts: [],
       settings: {
         input: { format: 'yyyy-MM-dd HH:mm:ss', locale: 'fr', zone: 'local' },
         output: { locale: 'fr', format: 'dd/MM/yyyy HH:mm:ss', zone: 'local' }
@@ -112,7 +155,7 @@ export default {
   methods: {
     fetchAlerts () {
       this.loading = true
-      this.axios.get('/api/v1/alerts').then(v => {
+      this.axios.get('/api/v1/alerts', { params: { search: this.search && this.search.length ? this.search : undefined } }).then(v => {
         this.alerts = v.data.results
         this.loading = false
       }).catch(() => {
@@ -120,7 +163,10 @@ export default {
       })
     },
     setAlert () {
-      this.axios.patch('/api/v1/alert', { id: this.selectedItem + 1, description: this.description }).then(v => {
+      this.axios.patch('/api/v1/alert', {
+        id: this.selectedItem,
+        description: this.description
+      }).then(v => {
         this.selectedItem = null
         this.fetchAlerts()
       }).catch(() => {
