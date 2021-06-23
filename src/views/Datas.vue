@@ -120,7 +120,8 @@
                         <v-icon dark>mdi-close</v-icon>
                       </v-btn>
                     </v-card-title>
-                    <graphic class="pa-4" :value="item"/>
+                    <graphic class="pa-4" :value="item" :dateD="dates[0]" :dateF="dates.length === 1 ? dates[0] : dates[1]"/>
+
                   </v-card>
                 </v-dialog>
               </v-card-title>

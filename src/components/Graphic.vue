@@ -9,17 +9,29 @@ import { DateTime } from 'luxon'
 
 export default {
   name: 'Graphic',
-  props: ['value'],
+  props: ['value', 'dateD', 'dateF'],
   created () {
     this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
-      let min = v.data[0].date
-      let max = v.data[0].date
-      for (const line of v.data) {
-        if (line.date < min) min = line.date
-        if (line.date > max) max = line.date
+      let min
+      let max
+      if (this.dateD != null && this.dateF != null) {
+        min = this.dateD
+        max = this.dateF
+
+        if (min > max) {
+          const tmpMax = max
+          max = min
+          min = tmpMax
+        }
+
+        this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis(), max: DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis() } } }
       }
-      this.chartOptions.xaxis.min = min
-      this.chartOptions.xaxis.max = max
+
+      // this.chartOptions.xaxis.min = DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis()
+      // this.chartOptions.xaxis.max = DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis()
+
+      console.log(this.chartOptions.xaxis.min, this.chartOptions.xaxis.max)
+
       this.series = v.data.map(v => ({ name: v.name, data: v.data }))
     })
   },
@@ -69,8 +81,6 @@ export default {
         xaxis: {
           type: 'datetime',
           tickAmount: 8,
-          min: null,
-          max: null,
           labels: {
             style: {
               fontSize: '11px'
