@@ -14,6 +14,7 @@ function cleanString (t) {
 app.get('/data', function (req, res, next) {
   const sql = `
     SELECT idLot,
+           t4.id AS sensorId,
            t4.libelle,
            MAX(date) as date,
            (SELECT valeur
@@ -30,6 +31,7 @@ app.get('/data', function (req, res, next) {
     FROM Data t1,
          Capteurs t4
     WHERE t1.capteur = t4.id
+    ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
     GROUP BY idLot, capteur
     LIMIT 300
   `
@@ -48,7 +50,7 @@ app.get('/data', function (req, res, next) {
     GROUP BY idLot, libelle
     LIMIT 300`
 
-  db.all(sql, [], (err, rows1) => {
+  db.all(sql, [req.query.sensor || undefined], (err, rows1) => {
     if (err) {
       res.status(400).json({ error: err })
       return
@@ -70,7 +72,7 @@ app.get('/data', function (req, res, next) {
           delete tmp.idLot
           lots[row.idLot] && lots[row.idLot].length ? lots[row.idLot].push(tmp) : lots[row.idLot] = [tmp]
         }
-        const finalLots = []
+        let finalLots = []
         for (const lot in lots) {
           if (req.query.firstDate && req.query.firstDate.length && req.query.lastDate && req.query.lastDate.length) {
             let debut = DateTime.fromISO(req.query.firstDate, { locale: 'fr' })
@@ -96,6 +98,7 @@ app.get('/data', function (req, res, next) {
           }
         }
 
+        if (req.query.search && req.query.search.length) finalLots = finalLots.filter(v => v.lotId.includes(req.query.search))
         return res.json(finalLots.sort((a, b) => a.lotId.localeCompare(b)).splice(0, 300))
       } catch (err) {
         console.log(err)
@@ -122,6 +125,15 @@ app.get('/services/lots/:id/data', function (req, res, next) {
       ret.push(rettmp[row])
     }
     return res.json(ret.sort((a, b) => a.name.localeCompare(b.name)))
+  })
+})
+
+app.get('/sensors', function (req, res) {
+  const sql = 'SELECT * FROM Capteurs'
+  db.all(sql, [], (err, rows) => {
+    if (err) return res.status(500).json({ message: err })
+    rows.forEach(v => { v.libelle = cleanString(v.libelle) })
+    return res.json(rows)
   })
 })
 
