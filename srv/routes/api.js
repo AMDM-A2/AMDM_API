@@ -146,4 +146,12 @@ app.get('/alerts', function (req, res, next) {
   })
 })
 
+app.patch('/alert', (req, res, next) => {
+  const sql = 'update Alertes set description = ? where id = ?'
+  db.all(sql, [req.body.description, req.body.id], (err, rows) => {
+    if (err) return res.status(400).json({ error: err })
+    return res.status(200).send('ok')
+  })
+})
+
 module.exports = app
