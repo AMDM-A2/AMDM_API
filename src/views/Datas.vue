@@ -106,7 +106,7 @@
                 <v-spacer/>
                 <v-dialog
                   v-model="dialog[item.lotId]"
-                  width="600"
+                  width="650"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -136,7 +136,7 @@
                       </v-btn>
                     </v-card-title>
                     <graphic :dateD="dates[0]" :dateF="dates.length === 1 ? dates[0] : dates[1]" :value="item"
-                             class="pa-4"/>
+                             class="pa-3 mr-3"/>
                   </v-card>
                 </v-dialog>
               </v-card-title>
