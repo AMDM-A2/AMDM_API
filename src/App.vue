@@ -5,14 +5,14 @@
       app
       clipped-left
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mobile"/>
+      <v-app-bar-nav-icon v-show="$vuetify.breakpoint.mobile" @click.stop="drawer = !drawer"/>
       <v-img
         alt="Logo"
         class="shrink mr-2"
         contain
         src="@/assets/logo_iutlorient.png"
         transition="scale-transition"
-        width="80"
+        width="75"
       />
       <v-spacer/>
       <div class="title">
@@ -67,6 +67,14 @@
 
             <v-list-item-title>Configuration</v-list-item-title>
           </v-list-item>
+
+          <v-list-item :to="{name: 'Credits'}">
+            <v-list-item-icon>
+              <v-icon>mdi-creative-commons</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Crédits</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -78,7 +86,7 @@
         class="text-center"
         cols="12"
       >
-        {{ new Date().getFullYear() }} — <strong>Le Groupe A2</strong>
+        {{ new Date().getFullYear() }} — <strong>IUT de Vannes</strong>
       </v-col>
     </v-footer>
   </v-app>

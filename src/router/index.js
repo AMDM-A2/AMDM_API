@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Datas from '../views/Datas.vue'
 import Home from '@/views/Home'
 import AlertConfig from '@/views/AlertConfig'
+import Credits from '@/views/Credits'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/alertsconfig',
     name: 'AlertConfig',
     component: AlertConfig
+  },
+  {
+    path: '/credits',
+    name: 'Credits',
+    component: Credits
   }
 ]
 

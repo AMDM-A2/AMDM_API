@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <v-list width="400">
+  <div class="mt-4 pa-2 mb-15">
+    <v-list width="600" elevation="5" class="rounded-xl">
       <v-subheader>Alertes</v-subheader>
+      <v-progress-linear
+        :active="loading"
+        class="ml-2 mr-2"
+        :indeterminate="loading"
+        color="pink"
+      ></v-progress-linear>
       <v-list-item-group
         v-model="selectedItem"
         color="primary"
@@ -15,7 +21,11 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>Alerte {{ alert.id }}</v-list-item-title>
-            <v-list-item-subtitle>{{ alert.date | luxon(settings) }}</v-list-item-subtitle>
+            <v-list-item-subtitle style="font-size: 12px">{{ alert.date | luxon(settings) }}</v-list-item-subtitle>
+            <small v-if="alert.description && alert.description.length"
+                   style="font-family: monospace">{{
+                alert.description.slice(0, 25)
+              }}{{ alert.description.length >= 25 ? '...' : '' }}</small>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -59,7 +69,7 @@
           <v-btn
             color="green darken-1"
             text
-            @click="dialog = false"
+            @click="dialog = false; setAlert()"
           >
             Valider
           </v-btn>
@@ -72,8 +82,23 @@
 <script>
 export default {
   name: 'AlertConfig',
+  watch: {
+    dialog () {
+      if (this.dialog === false) {
+        setTimeout(() => {
+          this.selectedItem = null
+        }, 100)
+      }
+    },
+    selectedItem () {
+      if (this.selectedItem) {
+        this.description = this.alerts.find(v => v.id === (this.selectedItem + 1)).description || ''
+      }
+    }
+  },
   data () {
     return {
+      loading: false,
       description: '',
       dialog: false,
       selectedItem: null,
@@ -84,10 +109,28 @@ export default {
       }
     }
   },
+  methods: {
+    fetchAlerts () {
+      this.loading = true
+      this.axios.get('/api/v1/alerts').then(v => {
+        this.alerts = v.data.results
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    setAlert () {
+      this.axios.patch('/api/v1/alert', { id: this.selectedItem + 1, description: this.description }).then(v => {
+        this.selectedItem = null
+        this.fetchAlerts()
+      }).catch(() => {
+        this.selectedItem = null
+        this.fetchAlerts()
+      })
+    }
+  },
   created () {
-    this.axios.get('/api/v1/alerts').then(v => {
-      this.alerts = v.data.results
-    })
+    this.fetchAlerts()
   }
 }
 </script>

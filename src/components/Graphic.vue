@@ -1,5 +1,6 @@
 <template>
   <div id="chart">
+    <v-progress-linear v-if="loading" indeterminate></v-progress-linear>
     <apexchart :options="chartOptions" :series="series" height="300" type="area"></apexchart>
   </div>
 </template>
@@ -12,18 +13,18 @@ export default {
   props: ['value', 'dateD', 'dateF'],
   watch: {
     dateD () {
-      this.resetMinMax()
+      this.fetchGraphic()
     },
     dateF () {
-      this.resetMinMax()
+      this.fetchGraphic()
     }
   },
   methods: {
-    resetMinMax () {
+    fetchGraphic () {
+      this.loading = true
       this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
         let min
         let max
-        console.log(this.dateD, this.dateF)
         if (this.dateD != null && this.dateF != null) {
           min = this.dateD
           max = this.dateF
@@ -34,7 +35,16 @@ export default {
             min = tmpMax
           }
 
-          this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis(), max: DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis() } } }
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis:
+                {
+                  min: DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis(),
+                  max: DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis()
+                }
+            }
+          }
         } else {
           let min = v.data[0].data[0][0]
           let max = v.data[0].data[0][0]
@@ -47,15 +57,19 @@ export default {
           this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: min, max: max } } }
         }
         this.series = v.data.map(v => ({ name: v.name, data: v.data }))
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     }
   },
   created () {
-    this.resetMinMax()
+    this.fetchGraphic()
   },
   data () {
     return {
       // Chart
+      loading: false,
       series: [],
       chartOptions: {
         chart: {

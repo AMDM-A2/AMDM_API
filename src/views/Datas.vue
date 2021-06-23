@@ -1,49 +1,52 @@
 <template>
   <v-container>
     <v-navigation-drawer
-      right
       v-model="drawer"
       clipped
       fixed
+      right
       width="290"
     >
       <div :style="!$vuetify.breakpoint.mobile ? `margin-top: ${$vuetify.application.top}px` : null">
         <v-date-picker v-model="dates" color="primary" locale="fr" range
                        selected-items-text="Sélection"></v-date-picker>
         <div class="pa-2">
-        <v-btn block color="" outlined @click="dates = [];">
-          <v-icon class="mr-1">mdi-refresh</v-icon>
-          Réinitialiser
-        </v-btn>
+          <v-btn block color="primary" outlined @click="dates = [];">
+            <v-icon class="mr-1">mdi-refresh</v-icon>
+            Réinitialiser
+          </v-btn>
         </div>
-        <div class="pa-2" v-if="sensors">
+        <div v-if="sensors" class="pa-2">
           <span>Liste des produits</span>
           <v-list dense>
             <v-list-item-group
               v-model="selectedSensor"
               color="primary"
             >
-            <v-list-item dense v-for="sensor in sensors" :key="`sensor_${sensor.id}`">
-              <v-list-item-title>{{ sensor.libelle }}</v-list-item-title>
-            </v-list-item>
+              <v-list-item v-for="sensor in sensors" :key="`sensor_${sensor.id}`" dense>
+                <v-list-item-title>{{ sensor.libelle }}</v-list-item-title>
+              </v-list-item>
             </v-list-item-group>
           </v-list>
         </div>
       </div>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn text block @click="drawer = false" color="primary"><v-icon class="mr-1">mdi-close</v-icon>Fermer</v-btn>
+          <v-btn block color="primary" text @click="drawer = false">
+            <v-icon class="mr-1">mdi-close</v-icon>
+            Fermer
+          </v-btn>
         </div>
       </template>
     </v-navigation-drawer>
     <v-data-iterator
-                     :items="items"
-                     :items-per-page="5"
-                     :loading="loading"
-                     loading-text="Chargement des données..."
-                     :sort-desc="sortDesc"
-                     :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
-                     class="mb-8"
+      :items="items"
+      :items-per-page="5"
+      :loading="loading"
+      :sort-desc="sortDesc"
+      :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
+      class="mb-8"
+      loading-text="Chargement des données..."
     >
       <template v-slot:header>
         <v-toolbar
@@ -69,8 +72,8 @@
                         solo-inverted
           ></v-text-field>
           <v-btn-toggle
-            class="mr-4"
             v-model="sortDesc"
+            class="mr-4"
             mandatory
           >
             <v-btn
@@ -132,8 +135,8 @@
                         <v-icon dark>mdi-close</v-icon>
                       </v-btn>
                     </v-card-title>
-                    <graphic class="pa-4" :value="item" :dateD="dates[0]" :dateF="dates.length === 1 ? dates[0] : dates[1]"/>
-
+                    <graphic :dateD="dates[0]" :dateF="dates.length === 1 ? dates[0] : dates[1]" :value="item"
+                             class="pa-4"/>
                   </v-card>
                 </v-dialog>
               </v-card-title>
