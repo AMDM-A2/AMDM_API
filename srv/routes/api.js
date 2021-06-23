@@ -127,9 +127,10 @@ app.get('/services/lots/:id/data', function (req, res, next) {
 
 app.get('/alerts', function (req, res, next) {
   const sql = 'SELECT * FROM Alertes LIMIT ? OFFSET ?'
-  db.all(sql, [10, req.query.skip ? req.query.skip * 10 : 0], (err, rows) => {
+  const nb = req.query.size && !isNaN(req.query.size) ? req.query.size : 10
+  db.all(sql, [nb, req.query.skip && !isNaN(req.query.skip) ? req.query.skip * nb : 0], (err, rows) => {
     if (err) return res.status(500).json({ message: err })
-    return res.json(rows)
+    return res.json({ results: rows, count: parseInt(nb) })
   })
 })
 
