@@ -166,7 +166,7 @@ app.patch('/alert', (req, res, next) => {
 
 app.put('/alert', (req, res) => {
   const sql = 'insert into Alertes (idLot, date, description) values (?, ?, ?)'
-  db.all(sql, [req.body.idLot, Date.now(), req.body.description], (err, rows) => {
+  db.all(sql, [req.body.idLot, DateTime.now().toFormat('yyyy-MM-dd hh:mm:ss', { locale: 'fr' }), req.body.description], (err, rows) => {
     if (err) return res.status(400).json({ error: err })
     return res.status(200).send('ok')
   })
