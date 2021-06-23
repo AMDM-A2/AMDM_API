@@ -125,4 +125,12 @@ app.get('/services/lots/:id/data', function (req, res, next) {
   })
 })
 
+app.get('/alerts', function (req, res, next) {
+  const sql = 'SELECT * FROM Alertes LIMIT ? OFFSET ?'
+  db.all(sql, [10, req.query.skip ? req.query.skip * 10 : 0], (err, rows) => {
+    if (err) return res.status(500).json({ message: err })
+    return res.json(rows)
+  })
+})
+
 module.exports = app
