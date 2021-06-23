@@ -11,10 +11,23 @@
         <v-date-picker v-model="dates" color="#8e0088" locale="fr" range
                        selected-items-text="Sélection"></v-date-picker>
         <div class="pa-2">
-        <v-btn block color="#8e0088" outlined @click="dates = []; fetchData()">
+        <v-btn block color="#8e0088" outlined @click="dates = []; selectedSensor = null; fetchData()">
           <v-icon class="mr-1">mdi-refresh</v-icon>
           Réinitialiser
         </v-btn>
+        </div>
+        <div class="pa-2" v-if="sensors">
+          <span>Liste des produits</span>
+          <v-list dense>
+            <v-list-item-group
+              v-model="selectedSensor"
+              color="primary"
+            >
+            <v-list-item dense v-for="sensor in sensors" :key="`sensor_${sensor.id}`">
+              <v-list-item-title>{{ sensor.libelle }}</v-list-item-title>
+            </v-list-item>
+            </v-list-item-group>
+          </v-list>
         </div>
       </div>
       <template v-slot:append>
@@ -23,11 +36,10 @@
         </div>
       </template>
     </v-navigation-drawer>
-    <v-data-iterator :custom-filter="customFilter"
+    <v-data-iterator
                      :items="items"
                      :items-per-page="5"
                      :loading="loading"
-                     :search="search"
                      loading-text="Chargement des données..."
                      :sort-desc="sortDesc"
                      :style="$vuetify.breakpoint.xl ? 'width: 60%' : 'width: 100%'"
@@ -159,6 +171,8 @@ export default {
   data () {
     return {
       // Iterator
+      selectedSensor: null,
+      sensors: null,
       loading: true,
       dates: [],
       drawer: false,
@@ -174,34 +188,47 @@ export default {
   },
   watch: {
     dates () {
-      if (this.dates) {
-        if (this.dates.length === 1) {
-          this.fetchData(this.dates[0], this.dates[0])
-        } else if (this.dates.length === 2) {
-          this.fetchData(this.dates[0], this.dates[1])
-        }
-      }
+      this.fetchData()
+    },
+    selectedSensor () {
+      this.fetchData()
+    },
+    search () {
+      this.fetchData()
     }
   },
   methods: {
-    fetchData (date1, date2) {
+    fetchData () {
       this.loading = true
-      const req = date1 && date2 ? `/api/v1/data?firstDate=${date1}&lastDate=${date2}` : '/api/v1/data'
-      this.axios.get(req).then(v => {
+      const req = '/api/v1/data'
+      const params = {}
+      if (this.selectedSensor != null && this.sensors && this.sensors[this.selectedSensor] != null) params.sensor = this.sensors[this.selectedSensor].id
+      if (this.dates) {
+        if (this.dates.length === 1) {
+          params.firstDate = this.dates[0]
+          params.lastDate = this.dates[0]
+        } else {
+          params.firstDate = this.dates[0]
+          params.lastDate = this.dates[1]
+        }
+      }
+      if (this.search && this.search.length) params.search = this.search
+      this.axios.get(req, { params }).then(v => {
         this.items = v.data
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    customFilter (item, search) {
-      if (!search || (search && !search.length)) return item
-      return item.filter(v => v.lotId.toString().includes(search.toString()))
-    },
     getItems (props) {
       if (props.options.sortDesc[0]) return props.items.filter(v => v.lotId)
       else return props.items.filter(v => v.lotId).reverse()
     }
+  },
+  mounted () {
+    this.axios.get('/api/v1/sensors').then(v => {
+      this.sensors = v.data
+    })
   },
   created () {
     this.fetchData()
