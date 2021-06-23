@@ -10,30 +10,48 @@ import { DateTime } from 'luxon'
 export default {
   name: 'Graphic',
   props: ['value', 'dateD', 'dateF'],
-  created () {
-    this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
-      let min
-      let max
-      if (this.dateD != null && this.dateF != null) {
-        min = this.dateD
-        max = this.dateF
+  watch: {
+    dateD: function () {
+      this.resetMinMax()
+    },
+    dateF: function () {
+      this.resetMinMax()
+    }
+  },
+  methods: {
+    resetMinMax: function () {
+      this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
+        let min
+        let max
+        console.log(this.dateD, this.dateF)
+        if (this.dateD != null && this.dateF != null) {
+          min = this.dateD
+          max = this.dateF
 
-        if (min > max) {
-          const tmpMax = max
-          max = min
-          min = tmpMax
+          if (min > max) {
+            const tmpMax = max
+            max = min
+            min = tmpMax
+          }
+
+          this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis(), max: DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis() } } }
+        } else {
+          let min = v.data[0].data[0][0]
+          let max = v.data[0].data[0][0]
+          for (const product of v.data) {
+            for (const line of product.data) {
+              if (line[0] < min) min = line[0]
+              if (line[0] > max) max = line[0]
+            }
+          }
+          this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: min, max: max } } }
         }
-
-        this.chartOptions = { ...this.chartOptions, ...{ xaxis: { min: DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis(), max: DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis() } } }
-      }
-
-      // this.chartOptions.xaxis.min = DateTime.fromFormat(min, 'yyyy-MM-dd', { locale: 'fr' }).toMillis()
-      // this.chartOptions.xaxis.max = DateTime.fromFormat(max, 'yyyy-MM-dd', { locale: 'fr' }).toMillis()
-
-      console.log(this.chartOptions.xaxis.min, this.chartOptions.xaxis.max)
-
-      this.series = v.data.map(v => ({ name: v.name, data: v.data }))
-    })
+        this.series = v.data.map(v => ({ name: v.name, data: v.data }))
+      })
+    }
+  },
+  created () {
+    this.resetMinMax()
   },
   data () {
     return {
