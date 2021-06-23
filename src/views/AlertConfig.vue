@@ -31,7 +31,6 @@
           ></v-text-field>
           <v-dialog
             v-model="dialogAdd"
-            persistent
             max-width="600px"
           >
             <template v-slot:activator="{ on, attrs }">
@@ -76,7 +75,7 @@
                   text
                   @click="dialogAdd = false"
                 >
-                  Close
+                  Fermer
                 </v-btn>
                 <v-btn
                   color="blue darken-1"
@@ -220,6 +219,8 @@ export default {
     createAlert () {
       this.selectedItem = null
       this.axios.put('/api/v1/alert', { idLot: parseInt(this.idNewAlert), description: this.descriptionNewAlert }).then(() => {
+        this.idNewAlert = ''
+        this.descriptionNewAlert = ''
         this.fetchAlerts()
       })
     },
