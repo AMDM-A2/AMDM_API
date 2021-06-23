@@ -10,7 +10,7 @@
         alt="Logo"
         class="shrink mr-2"
         contain
-        src="@/assets/logo.png"
+        src="@/assets/logo_iutlorient.png"
         transition="scale-transition"
         width="80"
       />
@@ -41,7 +41,8 @@
       >
         <v-list-item-group
           v-model="group"
-          active-class="deep-purple--text text--accent-4"
+          active-class="text--accent-4"
+          color="#375fa0"
         >
           <v-list-item to="/">
             <v-list-item-icon>

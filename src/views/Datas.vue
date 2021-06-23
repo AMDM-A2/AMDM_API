@@ -8,10 +8,10 @@
       width="290"
     >
       <div :style="!$vuetify.breakpoint.mobile ? `margin-top: ${$vuetify.application.top}px` : null">
-        <v-date-picker v-model="dates" color="#8e0088" locale="fr" range
+        <v-date-picker v-model="dates" color="primary" locale="fr" range
                        selected-items-text="Sélection"></v-date-picker>
         <div class="pa-2">
-        <v-btn block color="#8e0088" outlined @click="dates = [];">
+        <v-btn block color="" outlined @click="dates = [];">
           <v-icon class="mr-1">mdi-refresh</v-icon>
           Réinitialiser
         </v-btn>
@@ -32,7 +32,7 @@
       </div>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn text block @click="drawer = false" color="#8e0088"><v-icon class="mr-1">mdi-close</v-icon>Fermer</v-btn>
+          <v-btn text block @click="drawer = false" color="primary"><v-icon class="mr-1">mdi-close</v-icon>Fermer</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -48,7 +48,7 @@
       <template v-slot:header>
         <v-toolbar
           class="mb-4"
-          color="#8e0088"
+          color="primary"
           dark
           flat
         >
@@ -75,13 +75,13 @@
           >
             <v-btn
               :value="false"
-              color="#8e0088"
+              color="primary"
             >
               <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
             <v-btn
               :value="true"
-              color="#8e0088"
+              color="primary"
             >
               <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
@@ -110,7 +110,7 @@
                       v-bind="attrs"
                       v-on="on"
                       class="mx-2"
-                      color="#8e0088"
+                      color="primary"
                       dark
                       icon
                     >
@@ -124,7 +124,7 @@
                       Graphique | {{ item.lotId }}
                       <v-spacer/>
                       <v-btn
-                        color="#8e0088"
+                        color="primary"
                         dark
                         icon
                         @click="dialog[item.lotId] = false"
