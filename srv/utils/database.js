@@ -10,30 +10,36 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
   } else {
     // create table if not exist
     db.run(`
-            CREATE TABLE "Lots" (
-                "id"    INTEGER,
-                "description"    TEXT,
-                PRIMARY KEY("id")
-            );
+      CREATE TABLE "Lots" (
+          "id"    INTEGER,
+          "description"    TEXT,
+          PRIMARY KEY("id")
+      );
+      CREATE TABLE "Alertes" (
+          "id"    INTEGER,
+          "idLot"    INTEGER NOT NULL,
+          "date"    DATETIME NOT NULL,
+          "description"    TEXT,
+          PRIMARY KEY("id"),
+          FOREIGN KEY("idLot") REFERENCES "Lots"("id")
+      );
 
-            CREATE TABLE "Alertes" (
-                "id"    INTEGER,
-                "idLot"    INTEGER NOT NULL,
-                "heure"    datetime NOT NULL,
-                "description"    TEXT,
-                PRIMARY KEY("id"),
-                FOREIGN KEY("idLot") REFERENCES "Lots"("id")
-            );
-
-            CREATE TABLE "Capteurs" (
-                "id"    INTEGER,
-                "idLot"    INTEGER NOT NULL,
-                "heure"    datetime NOT NULL,
-                "libelle"    TEXT NOT NULL,
-                "valeur"    INTEGER NOT NULL,
-                PRIMARY KEY("id"),
-                FOREIGN KEY("idLot") REFERENCES Lots(id)
-            );`,
+      CREATE TABLE "Capteurs" (
+          "id"    INTEGER,
+          "libelle"    TEXT NOT NULL,
+          "description"    TEXT,
+          PRIMARY KEY("id")
+      );
+      CREATE TABLE "Data" (
+          "id"    INTEGER,
+          "idLot"    INTEGER NOT NULL,
+      "capteur"    INTEGER NOT NULL,
+          "date"    DATETIME NOT NULL,
+          "valeur"    INTEGER NOT NULL,
+          PRIMARY KEY("id"),
+          FOREIGN KEY("idLot") REFERENCES Lots(id),
+      FOREIGN KEY("capteur") REFERENCES Capteurs(id)
+      );`,
     // eslint-disable-next-line node/handle-callback-err
     (err) => {})
   }
