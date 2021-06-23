@@ -29,18 +29,70 @@
                         prepend-inner-icon="mdi-magnify"
                         solo-inverted
           ></v-text-field>
-        </v-toolbar>
+          <v-dialog
+            v-model="dialogAdd"
+            persistent
+            max-width="600px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="pink"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Créer une nouvelle alerte</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                        label="Identifiant du lot*"
+                        v-model="idNewAlert"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        label="Description*"
+                        v-model="descriptionNewAlert"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                <small>*requis</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="dialogAdd = false"
+                >
+                  Close
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="dialogAdd = false; createAlert();"
+                >
+                  Ajouter
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>        </v-toolbar>
       </template>
       <template v-slot:default="props">
         <div class="d-flex justify-center align-content-center">
           <v-list class="rounded-xl" elevation="5" width="100%">
             <v-subheader>Alertes</v-subheader>
-            <v-progress-linear
-              :active="loading"
-              :indeterminate="loading"
-              class="ml-2 mr-2"
-              color="pink"
-            ></v-progress-linear>
             <v-list-item-group
               color="primary"
             >
@@ -130,8 +182,8 @@ export default {
       }
     },
     selectedItem () {
-      if (this.selectedItem) {
-        this.description = this.alerts.find(v => v.id === (this.selectedItem)).description || ''
+      if (this.selectedItem && this.alerts && this.alerts.length) {
+        this.description = this.alerts.find(v => v.id === this.selectedItem).description || ''
       }
     },
     search () {
@@ -140,10 +192,13 @@ export default {
   },
   data () {
     return {
+      idNewAlert: '',
+      descriptionNewAlert: '',
       loading: false,
       search: '',
       description: '',
       dialog: false,
+      dialogAdd: false,
       selectedItem: null,
       alerts: [],
       settings: {
@@ -162,11 +217,17 @@ export default {
         this.loading = false
       })
     },
+    createAlert () {
+      this.selectedItem = null
+      this.axios.put('/api/v1/alert', { idLot: parseInt(this.idNewAlert), description: this.descriptionNewAlert }).then(() => {
+        this.fetchAlerts()
+      })
+    },
     setAlert () {
       this.axios.patch('/api/v1/alert', {
         id: this.selectedItem,
         description: this.description
-      }).then(v => {
+      }).then(() => {
         this.selectedItem = null
         this.fetchAlerts()
       }).catch(() => {

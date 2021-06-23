@@ -14,7 +14,7 @@ function cleanString (t) {
 app.get('/data', function (req, res, next) {
   const sql = `
     SELECT idLot,
-           t4.id AS sensorId,
+           t4.id     AS sensorId,
            t4.libelle,
            MAX(date) as date,
            (SELECT valeur
@@ -31,7 +31,7 @@ app.get('/data', function (req, res, next) {
     FROM Data t1,
          Capteurs t4
     WHERE t1.capteur = t4.id
-    ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
+      ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
     GROUP BY idLot, capteur
     LIMIT 300
   `
@@ -132,7 +132,9 @@ app.get('/sensors', function (req, res) {
   const sql = 'SELECT * FROM Capteurs'
   db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ message: err })
-    rows.forEach(v => { v.libelle = cleanString(v.libelle) })
+    rows.forEach(v => {
+      v.libelle = cleanString(v.libelle)
+    })
     return res.json(rows)
   })
 })
