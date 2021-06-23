@@ -11,7 +11,7 @@
         <v-date-picker v-model="dates" color="#8e0088" locale="fr" range
                        selected-items-text="Sélection"></v-date-picker>
         <div class="pa-2">
-        <v-btn block color="#8e0088" outlined @click="dates = []; selectedSensor = null; fetchData()">
+        <v-btn block color="#8e0088" outlined @click="dates = [];">
           <v-icon class="mr-1">mdi-refresh</v-icon>
           Réinitialiser
         </v-btn>

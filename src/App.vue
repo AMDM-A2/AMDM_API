@@ -5,7 +5,7 @@
       app
       clipped-left
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mobile"/>
       <v-img
         alt="Logo"
         class="shrink mr-2"

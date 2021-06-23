@@ -11,15 +11,15 @@ export default {
   name: 'Graphic',
   props: ['value', 'dateD', 'dateF'],
   watch: {
-    dateD: function () {
+    dateD () {
       this.resetMinMax()
     },
-    dateF: function () {
+    dateF () {
       this.resetMinMax()
     }
   },
   methods: {
-    resetMinMax: function () {
+    resetMinMax () {
       this.axios.get('/api/v1/services/lots/' + encodeURI(this.value.lotId) + '/data').then((v) => {
         let min
         let max
