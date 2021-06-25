@@ -35,17 +35,16 @@ describe('Test principal', function () {
     it('get data verify body', function () {
       request.get('http://localhost:3000/api/v1/data', (err, response, body) => {
         if (err) assert.fail('Error while getting API')
-        assert.strictEqual(JSON.parse(body)[0].lotId, 1)
+        assert.strictEqual(JSON.parse(body)[0].lotId, '1')
       })
     })
     it('API PATCH Alert', function () {
       request.patch('http://localhost:3000/api/v1/alert', { id: 1, description: 'test' }, (err, response, body) => {
-        console.log(body)
         if (err) assert.fail('Error while getting API')
-        assert.strictEqual(body.data, 'ok')
+        assert.strictEqual(body, 'ok')
         request.get('http://localhost:3000/api/v1/alerts', (err, response, body) => {
           if (err) assert.fail('Error while getting API')
-          assert.strictEqual(body.data.find(v => v.id === 1).description, 'test')
+          assert.strictEqual(JSON.parse(body).results.find(v => v.id === 1).description, 'test')
         })
       })
     })
