@@ -14,7 +14,7 @@ function cleanString (t) {
 app.get('/data', function (req, res, next) {
   const sql = `
     SELECT idLot,
-           t4.id AS sensorId,
+           t4.id     AS sensorId,
            t4.libelle,
            MAX(date) as date,
            (SELECT valeur
@@ -31,7 +31,7 @@ app.get('/data', function (req, res, next) {
     FROM Data t1,
          Capteurs t4
     WHERE t1.capteur = t4.id
-    ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
+      ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
     GROUP BY idLot, capteur
     LIMIT 300
   `
@@ -132,23 +132,41 @@ app.get('/sensors', function (req, res) {
   const sql = 'SELECT * FROM Capteurs'
   db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ message: err })
-    rows.forEach(v => { v.libelle = cleanString(v.libelle) })
+    rows.forEach(v => {
+      v.libelle = cleanString(v.libelle)
+    })
     return res.json(rows)
   })
 })
 
 app.get('/alerts', function (req, res, next) {
-  const sql = 'SELECT * FROM Alertes LIMIT ? OFFSET ?'
-  const nb = req.query.size && !isNaN(req.query.size) ? req.query.size : 10
-  db.all(sql, [nb, req.query.skip && !isNaN(req.query.skip) ? req.query.skip * nb : 0], (err, rows) => {
+  const sql = 'SELECT * FROM Alertes'
+  const search = req.query.search
+  const arr = []
+  db.all(sql, arr, (err, rows) => {
     if (err) return res.status(500).json({ message: err })
-    return res.json({ results: rows, count: parseInt(nb) })
+    if (search && search.length > 0) {
+      return res.json({
+        results: rows.filter(v => v.id.toString().includes(search) ||
+          (v.description != null
+            ? v.description.toUpperCase().includes(search.toUpperCase())
+            : false))
+      })
+    } else return res.json({ results: rows })
   })
 })
 
 app.patch('/alert', (req, res, next) => {
   const sql = 'update Alertes set description = ? where id = ?'
   db.all(sql, [req.body.description, req.body.id], (err, rows) => {
+    if (err) return res.status(400).json({ error: err })
+    return res.status(200).send('ok')
+  })
+})
+
+app.put('/alert', (req, res) => {
+  const sql = 'insert into Alertes (idLot, date, description) values (?, ?, ?)'
+  db.all(sql, [req.body.idLot, DateTime.now().toFormat('yyyy-MM-dd hh:mm:ss', { locale: 'fr' }), req.body.description], (err, rows) => {
     if (err) return res.status(400).json({ error: err })
     return res.status(200).send('ok')
   })

@@ -12,7 +12,7 @@
         contain
         src="@/assets/logo_iutlorient.png"
         transition="scale-transition"
-        width="75"
+        width="70"
       />
       <v-spacer/>
       <div class="title">
