@@ -129,7 +129,7 @@ export default {
         },
         legend: {
           position: 'top',
-          horizontalAlign: 'right',
+          horizontalAlign: 'left',
           offsetX: -10
         }
       }
