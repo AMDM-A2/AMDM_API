@@ -33,7 +33,6 @@ app.get('/data', function (req, res, next) {
     WHERE t1.capteur = t4.id
       ${req.query.sensor && !isNaN(req.query.sensor) ? 'AND t4.id = ?' : ''}
     GROUP BY idLot, capteur
-    LIMIT 300
   `
 
   const sql2 = `
@@ -47,8 +46,7 @@ app.get('/data', function (req, res, next) {
            )         as valeur,
            COUNT(*)  as sum
     FROM Alertes t1
-    GROUP BY idLot, libelle
-    LIMIT 300`
+    GROUP BY idLot, libelle`
 
   db.all(sql, [req.query.sensor || undefined], (err, rows1) => {
     if (err) {
