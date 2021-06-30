@@ -44,7 +44,7 @@ describe('Test principal', function () {
         assert.strictEqual(body, 'ok')
         request.get('http://localhost:3000/api/v1/alerts', (err, response, body) => {
           if (err) assert.fail('Error while getting API')
-          assert.strictEqual(JSON.parse(body).results.find(v => v.id === 1).description, 'test')
+          assert.strictEqual(JSON.parse(body).results.find(v => v.id === 1).description, '123')
         })
       })
     })
